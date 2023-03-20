@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="insertar imagen" width="100%"/>
+    <img src="https://github.com/GermoAlt/ScreenSpace-back/blob/main/images/svg/logo-no-background.svg?raw=true" width="100%"/>
 </h1>
 
 
