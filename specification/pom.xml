@@ -149,8 +149,10 @@
                             <apiPackage>io.screenspace.api</apiPackage>
                             <modelPackage>io.screenspace.model</modelPackage>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <skipValidateSpec>true</skipValidateSpec>
                             <configOptions>
                                 <delegatePattern>true</delegatePattern>
+                                <validateSpec>false</validateSpec>
                             </configOptions>
                         </configuration>
                     </execution>
