@@ -1066,6 +1066,28 @@ components:
         user:
           $ref: '#/components/schemas/User'
 
+    Comment:
+      type: object
+      required:
+        - comment
+      properties:
+        comment:
+          type: string
+
+    Rating:
+      type: object
+      required:
+      properties:
+        comment:
+          ref: '#/components/schemas/Comment'
+        rating:
+          type: number
+          format: double
+          description: Rating given by the user.
+        user:
+          ref: '#/components/schemas/User'
+          description: User who did the comment
+
     Cinema:
       type: object
       required:

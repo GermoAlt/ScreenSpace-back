@@ -50,6 +50,12 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.9.9</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
