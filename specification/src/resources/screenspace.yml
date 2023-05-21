@@ -13,11 +13,13 @@ paths:
   /v1/users:
     post:
       summary: Register a new user
+      operationId : createUser
       requestBody:
         required: true
         content:
           application/json:
             schema:
+              title: "UserCreationRequest"
               type: object
               properties:
                 email:
@@ -63,6 +65,7 @@ paths:
   /v1/users/me:
     get:
       summary: Get info about logged user
+      operationId: getLoggedUser
       responses:
         200:
           description: User info
@@ -91,6 +94,7 @@ paths:
 
     delete:
       summary: Deletes logged user
+      operationId: deleteLoggedUser
       responses:
         200:
           description: User deleted successfully
@@ -115,6 +119,7 @@ paths:
 
     put:
       summary: Updates logged user information
+      operationId: putLoggedUser
       requestBody:
         required: true
         content:
@@ -149,6 +154,7 @@ paths:
   /v1/auths:
     post:
       summary: Log in an existing user
+      operationId: logUser
       requestBody:
         required: true
         content:
@@ -202,6 +208,7 @@ paths:
 
     put:
       summary: Refresh access token
+      operationId: refreshAccessToken
       requestBody:
         required: true
         content:
@@ -252,6 +259,7 @@ paths:
 
     delete:
       summary: Logs out user
+      operationId: logOutUser
       responses:
         '200':
           description: User logged out
@@ -285,6 +293,7 @@ paths:
   /v1/forgot-password:
     post:
       summary: Forgot user password
+      operationId: forgotPassword
       requestBody:
         required: true
         content:
@@ -312,6 +321,7 @@ paths:
   /v1/reset-password:
     post:
       summary: Reset user password
+      operationId: resetUserPassword
       requestBody:
         required: true
         content:
@@ -339,6 +349,7 @@ paths:
   /v1/reset-password/confirm:
     post:
       summary: Confirm reset password
+      operationId: confirmPasswordReset
       requestBody:
         required: true
         content:
@@ -362,9 +373,9 @@ paths:
           content:
             application/json:
               schema:
-              #  anyOf:
-               #   - $ref: '#/components/schemas/ResetPasswordTokenError'
-                   $ref: '#/components/schemas/UpdatePasswordError'
+                #anyOf:
+                 # - $ref: '#/components/schemas/ResetPasswordTokenError'
+                  - $ref: '#/components/schemas/UpdatePasswordError'
       tags:
         - User Management
 
@@ -1065,28 +1076,6 @@ components:
           description: Rating given by the user.
         user:
           $ref: '#/components/schemas/User'
-
-    Comment:
-      type: object
-      required:
-        - comment
-      properties:
-        comment:
-          type: string
-
-    Rating:
-      type: object
-      required:
-      properties:
-        comment:
-          ref: '#/components/schemas/Comment'
-        rating:
-          type: number
-          format: double
-          description: Rating given by the user.
-        user:
-          ref: '#/components/schemas/User'
-          description: User who did the comment
 
     Cinema:
       type: object

@@ -153,6 +153,7 @@
                             <configOptions>
                                 <delegatePattern>true</delegatePattern>
                                 <validateSpec>false</validateSpec>
+                                <useTags>true</useTags>
                             </configOptions>
                         </configuration>
                     </execution>
