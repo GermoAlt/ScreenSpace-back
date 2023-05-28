@@ -8,18 +8,16 @@ servers:
 
 security:
   - bearerAuth: []
-
+  
 paths:
   /v1/users:
     post:
       summary: Register a new user
-      operationId : createUser
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              title: "UserCreationRequest"
               type: object
               properties:
                 email:
@@ -65,7 +63,6 @@ paths:
   /v1/users/me:
     get:
       summary: Get info about logged user
-      operationId: getLoggedUser
       responses:
         200:
           description: User info
@@ -91,10 +88,9 @@ paths:
           description: Gateway timeout
       tags:
         - User Management
-
+        
     delete:
       summary: Deletes logged user
-      operationId: deleteLoggedUser
       responses:
         200:
           description: User deleted successfully
@@ -116,10 +112,9 @@ paths:
           description: Gateway timeout
       tags:
         - User Management
-
+        
     put:
       summary: Updates logged user information
-      operationId: putLoggedUser
       requestBody:
         required: true
         content:
@@ -148,13 +143,12 @@ paths:
         '503':
           description: Service unavailable
       tags:
-        - User Management
-
+        - User Management      
+        
 
   /v1/auths:
     post:
       summary: Log in an existing user
-      operationId: logUser
       requestBody:
         required: true
         content:
@@ -205,10 +199,9 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - User Management
-
+        
     put:
       summary: Refresh access token
-      operationId: refreshAccessToken
       requestBody:
         required: true
         content:
@@ -256,10 +249,9 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - User Management
-
+        
     delete:
       summary: Logs out user
-      operationId: logOutUser
       responses:
         '200':
           description: User logged out
@@ -289,11 +281,10 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - User Management
-
+    
   /v1/forgot-password:
     post:
       summary: Forgot user password
-      operationId: forgotPassword
       requestBody:
         required: true
         content:
@@ -321,7 +312,6 @@ paths:
   /v1/reset-password:
     post:
       summary: Reset user password
-      operationId: resetUserPassword
       requestBody:
         required: true
         content:
@@ -345,11 +335,10 @@ paths:
                 $ref: '#/components/schemas/ResetPasswordError'
       tags:
         - User Management
-
+  
   /v1/reset-password/confirm:
     post:
       summary: Confirm reset password
-      operationId: confirmPasswordReset
       requestBody:
         required: true
         content:
@@ -373,12 +362,12 @@ paths:
           content:
             application/json:
               schema:
-                #anyOf:
-                 # - $ref: '#/components/schemas/ResetPasswordTokenError'
+                anyOf:
+                  - $ref: '#/components/schemas/ResetPasswordTokenError'
                   - $ref: '#/components/schemas/UpdatePasswordError'
       tags:
         - User Management
-
+  
   /v1/cinemas:
     get:
       summary: Get list of cinemas
@@ -565,7 +554,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Theater'
+                  $ref: '#/components/schemas/Theater'
         400:
           description: Bad request
         401:
@@ -615,7 +604,7 @@ paths:
           description: Service unavailable
       tags:
         - Theaters
-
+    
     put:
       summary: Updates theater info
       requestBody:
@@ -630,7 +619,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Theater'
+                  $ref: '#/components/schemas/Theater'
         400:
           description: Bad request
         401:
@@ -726,7 +715,7 @@ paths:
           name: longitude
           required: false
           schema:
-            type: string
+            type: string      
       responses:
         200:
           description: List of found screenings
@@ -747,13 +736,13 @@ paths:
 
   /v1/screenings/{screeningId}:
     parameters:
-      - name: screeningId
-        in: path
-        required: true
-        description: ID of screening
-        schema:
-          type: integer
-
+    - name: screeningId
+      in: path
+      required: true
+      description: ID of screening
+      schema:
+        type: integer
+        
     get:
       summary: Get screening by ID
       responses:
@@ -777,7 +766,7 @@ paths:
           description: Service unavailable
       tags:
         - Screenings
-
+        
     put:
       summary: Updates screening information
       requestBody:
@@ -792,7 +781,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Screening'
+                  $ref: '#/components/schemas/Screening'
         400:
           description: Bad request
         401:
@@ -837,7 +826,7 @@ paths:
         - Screenings
 
   /v1/screenings/availability:
-
+  
     get:
       summary: Search free time slots for screenings
       parameters:
@@ -878,7 +867,7 @@ paths:
   /v1/movies:
     get:
       summary: Get movies
-      parameters:
+      parameters: 
         - in: query
           name: movieTitle
           required: false
@@ -909,15 +898,15 @@ paths:
         - Movies
 
   /v1/movies/{movieId}:
-
+  
     parameters:
-      - name: movieId
-        in: path
-        required: true
-        description: ID of movie
-        schema:
-          type: integer
-
+    - name: movieId
+      in: path
+      required: true
+      description: ID of movie
+      schema:
+        type: integer
+  
     get:
       summary: Get movie by ID
       responses:
@@ -966,7 +955,7 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - Reservations
-
+        
   /v1/{movieId}/qualifications:
     parameters:
       - name: movieId
@@ -994,7 +983,7 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - Qualifications
-
+        
     post:
       summary: Adds a new qualification
       requestBody:
@@ -1014,7 +1003,7 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - Qualifications
-
+        
   /v1/health:
     get:
       summary: Check the health of the server
@@ -1287,7 +1276,7 @@ components:
           type: string
           description: Describes the cause of the error.
           example: The provided reset password token is invalid or has expired.
-
+    
     UpdatePasswordError:
       type: object
       properties:
@@ -1298,7 +1287,7 @@ components:
           type: string
           description: Describes the cause of the error.
           example: The provided password is not valid.
-
+          
     ResetPasswordError:
       type: object
       properties:
@@ -1309,7 +1298,7 @@ components:
           type: string
           description: Describes the cause of the error.
           example: The provided email address does not match any account.
-
+          
     ForgotPasswordError:
       type: object
       properties:
@@ -1318,7 +1307,7 @@ components:
           description: The error message.
       required:
         - error
-
+        
     HealthCheckResponse:
       type: object
       properties:
@@ -1328,7 +1317,7 @@ components:
         details:
           type: object
           description: Additional details about the server's status
-
+          
     Qualification:
       type: object
       properties:
@@ -1336,7 +1325,7 @@ components:
           $ref: '#/components/schemas/Rating'
         comment:
           $ref: '#/components/schemas/Comment'
-
+          
     TimeSlot:
       type: object
       properties:
@@ -1347,8 +1336,8 @@ components:
         end:
           type: string
           description: end of time slot
-          format: date-time
-
+          format: date-time        
+  
     CreateReservationRequest:
       type: object
       properties:
@@ -1360,7 +1349,7 @@ components:
           description: Id of screening
         seatsReserved:
           $ref: '#/components/schemas/SeatReserved'
-
+          
     CreateScreeningRequest:
       type: object
       properties:
@@ -1374,7 +1363,7 @@ components:
           type: string
           format: date-time
           description: Date of the screening
-
+          
     CreateCinemaRequest:
       type: object
       required:
@@ -1394,7 +1383,7 @@ components:
           type: number
           format: double
           description: The price per function in the cinema.
-
+            
     UpdateCinemaRequest:
       type: object
       required:
@@ -1428,7 +1417,7 @@ components:
           type: string
           format: date-time
           description: Date of the screening
-
+            
   securitySchemes:
     bearerAuth:
       type: http
