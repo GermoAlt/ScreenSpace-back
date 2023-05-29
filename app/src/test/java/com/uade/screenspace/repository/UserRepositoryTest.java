@@ -26,28 +26,28 @@ public class UserRepositoryTest {
 
     @Test
     void createAndFindByEmailAndPasswordAndIsOwner() {
-        var user = createTestUser(EMAIL, PASS, IS_OWNER);
+        User user = createTestUser(EMAIL, PASS, IS_OWNER);
         repository.save(user);
-        var foundUser = repository.findByEmailAndPasswordAndIsOwner(EMAIL, PASS, IS_OWNER);
+        User foundUser = repository.findByEmailAndPasswordAndIsOwner(EMAIL, PASS, IS_OWNER);
         assertNotNull(foundUser);
         assertTrue(user.getEmail().equals(foundUser.getEmail()) && user.getPassword().equals(foundUser.getPassword()) && user.getOwner() == foundUser.getOwner() && foundUser.getId() != null);
     }
 
     @Test
     void findByEmailAndIsOwner() {
-        var user = createTestUser(EMAIL, PASS, IS_OWNER);
+        User user = createTestUser(EMAIL, PASS, IS_OWNER);
         repository.save(user);
-        var foundUser = repository.findByEmailAndIsOwner(EMAIL, IS_OWNER);
+        User foundUser = repository.findByEmailAndIsOwner(EMAIL, IS_OWNER);
         assertNotNull(foundUser);
         assertTrue(user.getEmail().equals(foundUser.getEmail()) && user.getPassword().equals(foundUser.getPassword()) && user.getOwner() == foundUser.getOwner() && foundUser.getId() != null);
     }
 
     @Test
     void deleteByEmailAndIsOwner() {
-        var user = createTestUser(EMAIL, PASS, IS_OWNER);
+        User user = createTestUser(EMAIL, PASS, IS_OWNER);
         repository.save(user);
-        var deleted = repository.deleteByEmailAndIsOwner(EMAIL, IS_OWNER);
-        var found = repository.findByEmailAndIsOwner(EMAIL, IS_OWNER);
+        long deleted = repository.deleteByEmailAndIsOwner(EMAIL, IS_OWNER);
+        User found = repository.findByEmailAndIsOwner(EMAIL, IS_OWNER);
 
         assertEquals(1, deleted);
         assertNull(found);

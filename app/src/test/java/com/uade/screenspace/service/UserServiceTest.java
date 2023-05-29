@@ -37,10 +37,10 @@ class UserServiceTest {
 
     @Test
     void createUser() {
-        var expectedUser = createTestPendingUser(EMAIL, PASS, IS_OWNER);
+        PendingUser expectedUser = createTestPendingUser(EMAIL, PASS, IS_OWNER);
         Mockito.when(pendingUserRepository.save(Mockito.any(PendingUser.class))).thenReturn(expectedUser);
 
-        var returnedUser = service.createPendingUser(EMAIL, PASS, IS_OWNER);
+        PendingUser returnedUser = service.createPendingUser(EMAIL, PASS, IS_OWNER);
 
         assertEquals(expectedUser, returnedUser);
     }

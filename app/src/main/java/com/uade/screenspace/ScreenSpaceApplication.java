@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication(scanBasePackages = "com.uade.screenspace")
 @EnableMongoRepositories(basePackages = "com.uade.screenspace.repository")
-@ComponentScan("com.uade.screenspace.controller")
 public class ScreenSpaceApplication {
 
     public static void main(String[] args) {

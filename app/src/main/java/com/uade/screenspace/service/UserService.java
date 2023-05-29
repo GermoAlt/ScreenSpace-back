@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +27,7 @@ public class UserService implements IUserService{
 
     public PendingUser createPendingUser(String email, String password, boolean isOwner){
         String generatedCode;
-        var existentCodes = pendingUserRepository.findAll().stream().map(p -> p.getCode().getCode()).collect(Collectors.toSet());
+        Set<String> existentCodes = pendingUserRepository.findAll().stream().map(p -> p.getCode().getCode()).collect(Collectors.toSet());
         do {
             generatedCode = getCode();
         } while (existentCodes.contains(generatedCode));
@@ -34,11 +36,11 @@ public class UserService implements IUserService{
 
     @Override
     public User confirmUserCreation(String email, String code) {
-        var foundRequests = pendingUserRepository.findAll().stream().filter(p -> p.getCode().getCode().equals(code) && p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
+        List<PendingUser> foundRequests = pendingUserRepository.findAll().stream().filter(p -> p.getCode().getCode().equals(code) && p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
         if(foundRequests.isEmpty())
             throw new RuntimeException();
 
-        var createdUser = userRepository.save(foundRequests.get(0).getPendingUser());
+        User createdUser = userRepository.save(foundRequests.get(0).getPendingUser());
         pendingUserRepository.delete(foundRequests.get(0));
 
         return createdUser;
@@ -66,7 +68,7 @@ public class UserService implements IUserService{
         if (requestedUser == null){
             throw new RuntimeException();
         }
-        var existentCodes = requestedUser.getCodes()
+        Set<String> existentCodes = requestedUser.getCodes()
                 .stream()
                 .map(Code::getCode)
                 .collect(Collectors.toSet());
