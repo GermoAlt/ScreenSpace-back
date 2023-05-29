@@ -13,23 +13,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-public class UserController implements UserManagementApi {
+public class UserController  implements UserManagementApi{
 
     @Autowired
     private UserService service;
 
     @Override
-    public ResponseEntity<Void> confirmPasswordReset(InlineObject4 inlineObject4) {
+    public ResponseEntity<Void> confirmPasswordReset(@Valid ConfirmPasswordResetRequest confirmPasswordResetRequest) {
         return null;
-    }
-
-    @Override
-    public ResponseEntity<InlineResponse201> createUser(UserCreationRequest userCreationRequest) {
-        PendingUser user = service.createPendingUser(userCreationRequest.getEmail(), userCreationRequest.getPassword(), userCreationRequest.getIsOwner());
-        return ResponseEntity.ok(new InlineResponse201());
     }
 
     @Override
@@ -38,7 +33,7 @@ public class UserController implements UserManagementApi {
     }
 
     @Override
-    public ResponseEntity<Void> forgotPassword(InlineObject2 inlineObject2) {
+    public ResponseEntity<Void> forgotPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
         return null;
     }
 
@@ -53,22 +48,29 @@ public class UserController implements UserManagementApi {
     }
 
     @Override
-    public ResponseEntity<InlineResponse200> logUser(InlineObject1 inlineObject1) {
+    public ResponseEntity<RefreshAccessToken200Response> logUser(@Valid LogUserRequest logUserRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity<User> putLoggedUser(User user) {
+    public ResponseEntity<User> putLoggedUser(@Valid User user) {
         return null;
     }
 
     @Override
-    public ResponseEntity<InlineResponse200> refreshAccessToken(InlineObject inlineObject) {
+    public ResponseEntity<RefreshAccessToken200Response> refreshAccessToken(@Valid RefreshAccessTokenRequest refreshAccessTokenRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity<Void> resetUserPassword(InlineObject3 inlineObject3) {
+    public ResponseEntity<Void> resetUserPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
         return null;
     }
+
+    @Override
+    public ResponseEntity<CreateUser201Response> createUser(UserCreationRequest userCreationRequest) {
+        PendingUser user = service.createPendingUser(userCreationRequest.getEmail(), userCreationRequest.getPassword(), userCreationRequest.getIsOwner());
+        return ResponseEntity.ok(new CreateUser201Response());
+    }
+
 }
