@@ -29,6 +29,9 @@ public class User implements UserDetails{
         this.codes = new ArrayList<>();
     }
 
+    public User() {
+    }
+
     public String getEmail() {
         return email;
     }
@@ -61,6 +64,10 @@ public class User implements UserDetails{
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public List<Code> getCodes() {
         return codes;
     }
@@ -85,21 +92,21 @@ public class User implements UserDetails{
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

@@ -149,7 +149,6 @@ paths:
       tags:
         - User Management
 
-
   /v1/auths:
     post:
       summary: Log in an existing user
@@ -174,10 +173,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
+                $ref: '#/components/schemas/LoginResponse'
         '400':
           description: Bad request, invalid input
           content:
@@ -1420,6 +1416,16 @@ components:
           type: string
           description: end of time slot
           format: date-time
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: login token
+        refreshToken:
+          type: string
+          description: refresh token
 
     CreateReservationRequest:
       type: object
