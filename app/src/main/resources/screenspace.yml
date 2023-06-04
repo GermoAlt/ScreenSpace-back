@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: ScreenSpace API
-  version: 1.0.4
+  version: 1.0.5
   description: API for ScreenSpace cinema application
 servers:
   - url: https://screenspace.com/api/v1/
@@ -34,7 +34,7 @@ paths:
                 - isOwner
       responses:
         '201':
-          description: User registered successfully
+          description: User registration request successfully created
           content:
             application/json:
               schema:
@@ -72,7 +72,6 @@ paths:
           content:
             application/json:
               schema:
-                type: array
                 items:
                   $ref: '#/components/schemas/User'
         400:
@@ -373,15 +372,66 @@ paths:
           content:
             application/json:
               schema:
-                #anyOf:
-                 # - $ref: '#/components/schemas/ResetPasswordTokenError'
+                anyOf:
+                  - $ref: '#/components/schemas/ResetPasswordTokenError'
                   - $ref: '#/components/schemas/UpdatePasswordError'
+      tags:
+        - User Management
+
+  /v1/users/confirm-registration:
+    post:
+      summary: Confirms creation of new user
+      operationId : confirmCreateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: "ConfirmUserCreationRequest"
+              type: object
+              properties:
+                email:
+                  type: string
+                token:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '201':
+          description: User registration confirmed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable, offline error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       tags:
         - User Management
 
   /v1/cinemas:
     get:
       summary: Get list of cinemas
+      operationId : getCinemas
       responses:
         '200':
           description: List of cinemas
@@ -405,6 +455,7 @@ paths:
         - Cinemas
     post:
       summary: Add new cinema
+      operationId : createCinema
       requestBody:
         required: true
         content:
@@ -432,6 +483,7 @@ paths:
           description: Service unavailable
       tags:
         - Cinemas
+
   /v1/cinemas/{cinemaId}:
     parameters:
       - name: cinemaId
@@ -442,6 +494,7 @@ paths:
           type: integer
     get:
       summary: Get cinema details by ID
+      operationId : getCinemaById
       responses:
         '200':
           description: Cinema details
@@ -465,6 +518,7 @@ paths:
         - Cinemas
     put:
       summary: Update cinema details by ID
+      operationId : updateCinemaById
       requestBody:
         required: true
         content:
@@ -496,6 +550,7 @@ paths:
         - Cinemas
     delete:
       summary: Delete cinema by ID
+      operationId : deleteCinemaById
       responses:
         '200':
           description: Cinema deleted successfully
@@ -525,6 +580,7 @@ paths:
 
     get:
       summary: Get list of theaters for cinema
+      operationId : getTheathersForCinema
       responses:
         200:
           description: List of theaters
@@ -553,6 +609,7 @@ paths:
 
     post:
       summary: Add new theater to cinema
+      operationId : createTheater
       requestBody:
         required: true
         content:
@@ -594,6 +651,7 @@ paths:
 
     get:
       summary: Get details of a theater
+      operationId : getTheatherById
       responses:
         '200':
           description: Theater details
@@ -618,6 +676,7 @@ paths:
 
     put:
       summary: Updates theater info
+      operationId : updateTheaterById
       requestBody:
         required: true
         content:
@@ -650,6 +709,7 @@ paths:
 
     delete:
       summary: Delete theater by ID
+      operationId : deleteTheaterById
       responses:
         200:
           description: Theater deleted successfully
@@ -673,6 +733,7 @@ paths:
   /v1/screenings:
     post:
       summary: Add a new screening
+      operationId : createScreening
       requestBody:
         required: true
         content:
@@ -696,6 +757,7 @@ paths:
         - Screenings
     get:
       summary: Search screenings
+      operationId : searchScreenings
       parameters:
         - in: query
           name: cinema
@@ -756,6 +818,7 @@ paths:
 
     get:
       summary: Get screening by ID
+      operationId : getScreeningByID
       responses:
         '200':
           description: Screening details
@@ -780,6 +843,7 @@ paths:
 
     put:
       summary: Updates screening information
+      operationId : updateScreening
       requestBody:
         required: true
         content:
@@ -814,6 +878,7 @@ paths:
 
     delete:
       summary: Delete screening by ID
+      operationId : deleteScreeningById
       responses:
         200:
           description: Screening deleted successfully
@@ -840,6 +905,7 @@ paths:
 
     get:
       summary: Search free time slots for screenings
+      operationId : searchAvailabilityForScreening
       parameters:
         - in: query
           name: cinema
@@ -878,6 +944,7 @@ paths:
   /v1/movies:
     get:
       summary: Get movies
+      operationId : getMovies
       parameters:
         - in: query
           name: movieTitle
@@ -920,6 +987,7 @@ paths:
 
     get:
       summary: Get movie by ID
+      operationId : getMovieById
       responses:
         '200':
           description: Movie details
@@ -945,6 +1013,7 @@ paths:
   /v1/reservations:
     post:
       summary: Adds new reservation
+      operationId : createReservation
       requestBody:
         required: true
         content:
@@ -977,6 +1046,7 @@ paths:
           type: integer
     get:
       summary: Get qualifications for a movie
+      operationId : getQualificationsByMovie
       responses:
         200:
           description: List of qualifications
@@ -997,6 +1067,7 @@ paths:
 
     post:
       summary: Adds a new qualification
+      operationId : createQualification
       requestBody:
         required: true
         content:
@@ -1018,6 +1089,7 @@ paths:
   /v1/health:
     get:
       summary: Check the health of the server
+      operationId : healthCheck
       description: Returns status 200 if the server is healthy
       responses:
         200:

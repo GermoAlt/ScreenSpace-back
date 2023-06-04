@@ -172,6 +172,10 @@
             <artifactId>jackson-databind-nullable</artifactId>
             <version>${jackson-databind-nullable}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

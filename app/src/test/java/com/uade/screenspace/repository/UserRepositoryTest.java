@@ -37,9 +37,9 @@ public class UserRepositoryTest {
     void findByEmailAndIsOwner() {
         User user = createTestUser(EMAIL, PASS, IS_OWNER);
         repository.save(user);
-        User foundUser = repository.findByEmailAndIsOwner(EMAIL, IS_OWNER);
-        assertNotNull(foundUser);
-        assertTrue(user.getEmail().equals(foundUser.getEmail()) && user.getPassword().equals(foundUser.getPassword()) && user.getOwner() == foundUser.getOwner() && foundUser.getId() != null);
+        var foundUser = repository.findByEmailAndIsOwner(EMAIL, IS_OWNER);
+        assertTrue(foundUser.isPresent());
+        assertTrue(user.getEmail().equals(foundUser.get().getEmail()) && user.getPassword().equals(foundUser.get().getPassword()) && user.getOwner() == foundUser.get().getOwner() && foundUser.get().getId() != null);
     }
 
     @Test
@@ -47,10 +47,10 @@ public class UserRepositoryTest {
         User user = createTestUser(EMAIL, PASS, IS_OWNER);
         repository.save(user);
         long deleted = repository.deleteByEmailAndIsOwner(EMAIL, IS_OWNER);
-        User found = repository.findByEmailAndIsOwner(EMAIL, IS_OWNER);
+        var found = repository.findByEmailAndIsOwner(EMAIL, IS_OWNER);
 
         assertEquals(1, deleted);
-        assertNull(found);
+        assertTrue(found.isEmpty());
     }
 
     private User createTestUser(String email, String password, boolean isOwner){

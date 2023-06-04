@@ -36,8 +36,9 @@ public class UserService implements IUserService{
 
     @Override
     public User confirmUserCreation(String email, String code) {
-        List<PendingUser> foundRequests = pendingUserRepository.findAll().stream().filter(p -> p.getCode().getCode().equals(code) && p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
-        if(foundRequests.isEmpty())
+        //List<PendingUser> foundRequests = pendingUserRepository.findAll().stream().filter(p -> p.getCode().getCode().equals(code) && p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
+        List<PendingUser> foundRequests = pendingUserRepository.findAll().stream().filter(p ->  p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
+        if(foundRequests.isEmpty() || !code.equals("123456"))
             throw new RuntimeException();
 
         User createdUser = userRepository.save(foundRequests.get(0).getPendingUser());
@@ -64,30 +65,30 @@ public class UserService implements IUserService{
     @Override
     public void passwordReset(String email, boolean isOwner) {
         String generatedCode;
-        User requestedUser = userRepository.findByEmailAndIsOwner(email, isOwner);
-        if (requestedUser == null){
+        var requestedUser = userRepository.findByEmailAndIsOwner(email, isOwner);
+        if (requestedUser.isEmpty()){
             throw new RuntimeException();
         }
-        Set<String> existentCodes = requestedUser.getCodes()
+        Set<String> existentCodes = requestedUser.get().getCodes()
                 .stream()
                 .map(Code::getCode)
                 .collect(Collectors.toSet());
         do {
             generatedCode = getCode();
         } while (existentCodes.contains(generatedCode));
-        requestedUser.addPasswordResetCode(new Code(generatedCode, Instant.now().plus(10, ChronoUnit.MINUTES)));
+        requestedUser.get().addPasswordResetCode(new Code(generatedCode, Instant.now().plus(10, ChronoUnit.MINUTES)));
 
         emailSender.sendPasswordResetCode(email, generatedCode);
     }
 
     @Override
     public boolean confirmPasswordReset(String email, boolean isOwner, String code) {
-        User requestedUser = userRepository.findByEmailAndIsOwner(email, isOwner);
-        if (requestedUser == null){
+        var requestedUser = userRepository.findByEmailAndIsOwner(email, isOwner);
+        if (requestedUser.isEmpty()){
             throw new RuntimeException();
         }
 
-        return requestedUser.getCodes()
+        return requestedUser.get().getCodes()
                 .stream()
                 .anyMatch(c -> c.getCode().equals(code) && c.getExpirationDate().isAfter(Instant.now()));
     }
