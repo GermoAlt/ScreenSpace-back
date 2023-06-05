@@ -72,7 +72,6 @@ paths:
           content:
             application/json:
               schema:
-                items:
                   $ref: '#/components/schemas/User'
         400:
           description: Bad request

@@ -3,6 +3,7 @@ package com.uade.screenspace.controller;
 
 import com.uade.screenspace.entity.PendingUser;
 import com.uade.screenspace.entity.RefreshToken;
+import com.uade.screenspace.mapper.UserMapper;
 import com.uade.screenspace.service.IAuthService;
 import com.uade.screenspace.service.IUserService;
 import io.screenspace.api.UserManagementApi;
@@ -16,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 public class UserController  implements UserManagementApi{
@@ -41,7 +41,8 @@ public class UserController  implements UserManagementApi{
 
     @Override
     public ResponseEntity<Void> deleteLoggedUser() {
-        return null;
+        service.deleteUser(getJWTUser());
+        return ResponseEntity.ok(null);
     }
 
     @Override
@@ -50,9 +51,9 @@ public class UserController  implements UserManagementApi{
     }
 
     @Override
-    public ResponseEntity<List<User>> getLoggedUser() {
-
-        return null;
+    public ResponseEntity<User> getLoggedUser() {
+        var user = service.findUserById(getJWTUser().getId());
+        return ResponseEntity.ok(UserMapper.entityToModel(user));
     }
 
     @Override

@@ -48,13 +48,18 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public User findUserById(String id) {
+        return userRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    @Override
     public User findUser(String email, String password, boolean isOwner) {
         return userRepository.findByEmailAndPasswordAndIsOwner(email, password, isOwner);
     }
 
     @Override
-    public void deleteUser(String email, boolean isOwner) {
-        userRepository.deleteByEmailAndIsOwner(email, isOwner);
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 
     @Override

@@ -8,9 +8,11 @@ public interface IUserService {
 
     User confirmUserCreation(String email, String code);
 
+    User findUserById(String id);
+
     User findUser(String email, String password, boolean isOwner);
 
-    void deleteUser(String email, boolean isOwner);
+    void deleteUser(User user);
 
     User updateUser(String email, String password, boolean isOwner, String profilePic);
 
