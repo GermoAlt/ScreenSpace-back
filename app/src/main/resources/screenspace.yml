@@ -571,7 +571,7 @@ paths:
         required: true
         description: ID of cinema
         schema:
-          type: integer
+          type: string
 
     get:
       summary: Get list of theaters for cinema
@@ -626,6 +626,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        404:
+          description: Cinema does not exist
         500:
           description: Internal server error
         503:
@@ -642,7 +644,7 @@ paths:
         required: true
         description: ID of theater
         schema:
-          type: integer
+          type: string
 
     get:
       summary: Get details of a theater
@@ -1174,6 +1176,9 @@ components:
     Theater:
       type: object
       properties:
+        id:
+          type: string
+          description: Id of the theater
         name:
           type: string
           description: Name of the theater
