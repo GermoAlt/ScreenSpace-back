@@ -1,1 +1,1 @@
-web: java -jar build/libs/*SNAPSHOT.jar --skip-validate-spec
+web: java -jar target/*.jar
