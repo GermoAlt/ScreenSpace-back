@@ -31,7 +31,15 @@ public class UserService implements IUserService{
         do {
             generatedCode = getCode();
         } while (existentCodes.contains(generatedCode));
-        return pendingUserRepository.save(new PendingUser(new User(email, password, isOwner, null), new Code(generatedCode, Instant.now().plus(10, ChronoUnit.MINUTES))));
+        var pendingUser = pendingUserRepository.save(new PendingUser(new User(email, password, isOwner, null), new Code(generatedCode, Instant.now().plus(10, ChronoUnit.MINUTES))));
+
+        try{
+            emailSender.sendPasswordResetCode(email, generatedCode);
+        } catch (Exception e){
+
+        }
+
+        return pendingUserRepository.save(pendingUser);
     }
 
     @Override
@@ -83,7 +91,12 @@ public class UserService implements IUserService{
         } while (existentCodes.contains(generatedCode));
         requestedUser.get().addPasswordResetCode(new Code(generatedCode, Instant.now().plus(10, ChronoUnit.MINUTES)));
 
-        emailSender.sendPasswordResetCode(email, generatedCode);
+        try{
+            emailSender.sendPasswordResetCode(email, generatedCode);
+        } catch (Exception e){
+
+        }
+
     }
 
     @Override
