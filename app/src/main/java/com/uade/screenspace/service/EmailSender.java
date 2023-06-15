@@ -18,12 +18,26 @@ public class EmailSender implements IEmailSender {
     @Value("${app.sendgrid.key}")
     private String API_KEY;
 
+    @Value("${app.sendgrid.from}")
+    private String FROM_EMAIL;
+
     @Override
     public boolean sendPasswordResetCode(String email, String code) throws IOException {
-        Email from = new Email("nicolas.martin.cano@gmail.com");
-        String subject = "Sending with Twilio SendGrid is Fun";
+        String subject = "Reinicio de contraseña Screenspace";
+        Content content = new Content("text/plain", String.format("Su codigo de reinicio de contraseña es : %s", code));
+        return sendEmail(subject, content, email);
+    }
+
+    @Override
+    public boolean sendRegistrationCode(String email, String code) throws IOException {
+        String subject = "Confirmacion de registro de usuario";
+        Content content = new Content("text/plain", String.format("Su codigo de confirmacion de registro es : %s", code));
+        return sendEmail(subject, content, email);
+    }
+
+    public boolean sendEmail(String subject, Content content, String email) throws IOException {
+        Email from = new Email(FROM_EMAIL);
         Email to = new Email(email);
-        Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
         Mail mail = new Mail(from, subject, to, content);
         SendGrid sg = new SendGrid(API_KEY);
         Request request = new Request();
