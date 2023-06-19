@@ -27,7 +27,9 @@ public class UserService implements IUserService{
 
     public PendingUser createPendingUser(String email, String password, boolean isOwner){
         String generatedCode;
-        Set<String> existentCodes = pendingUserRepository.findAll().stream().map(p -> p.getCode().getCode()).collect(Collectors.toSet());
+        var existentPending = pendingUserRepository.findAll();
+        Set<String> existentCodes = existentPending.stream().map(p -> p.getCode().getCode()).collect(Collectors.toSet());
+
         do {
             generatedCode = getCode();
         } while (existentCodes.contains(generatedCode));
@@ -44,10 +46,9 @@ public class UserService implements IUserService{
 
     @Override
     public User confirmUserCreation(String email, String code) {
-        //List<PendingUser> foundRequests = pendingUserRepository.findAll().stream().filter(p -> p.getCode().getCode().equals(code) && p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
-        List<PendingUser> foundRequests = pendingUserRepository.findAll().stream().filter(p ->  p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
-        if(foundRequests.isEmpty() || !code.equals("123456"))
-            throw new RuntimeException();
+        List<PendingUser> foundRequests = pendingUserRepository.findAll().stream().filter(p -> p.getCode().getCode().equals(code) && p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
+        if(foundRequests.isEmpty())
+            throw new RuntimeException("No pending registration for this user");
 
         User createdUser = userRepository.save(foundRequests.get(0).getPendingUser());
         pendingUserRepository.delete(foundRequests.get(0));
