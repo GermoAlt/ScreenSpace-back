@@ -34,7 +34,7 @@ public class UserService implements IUserService{
         var pendingUser = pendingUserRepository.save(new PendingUser(new User(email, password, isOwner, null), new Code(generatedCode, Instant.now().plus(10, ChronoUnit.MINUTES))));
 
         try{
-            emailSender.sendPasswordResetCode(email, generatedCode);
+            emailSender.sendRegistrationCode(email, generatedCode);
         } catch (Exception e){
 
         }
