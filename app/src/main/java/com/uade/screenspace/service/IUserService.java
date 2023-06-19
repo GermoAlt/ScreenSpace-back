@@ -16,7 +16,7 @@ public interface IUserService {
 
     User updateUser(String email, String password, boolean isOwner, String profilePic);
 
-    void passwordReset(String email, boolean isOwner);
+    void passwordReset(String email);
 
-    boolean confirmPasswordReset(String email, boolean isOwner, String code);
+    boolean confirmPasswordReset(String email, String code);
 }

@@ -77,9 +77,9 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public void passwordReset(String email, boolean isOwner) {
+    public void passwordReset(String email) {
         String generatedCode;
-        var requestedUser = userRepository.findByEmailAndIsOwner(email, isOwner);
+        var requestedUser = userRepository.findByEmail(email);
         if (requestedUser.isEmpty()){
             throw new RuntimeException();
         }
@@ -101,8 +101,8 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public boolean confirmPasswordReset(String email, boolean isOwner, String code) {
-        var requestedUser = userRepository.findByEmailAndIsOwner(email, isOwner);
+    public boolean confirmPasswordReset(String email, String code) {
+        var requestedUser = userRepository.findByEmail(email);
         if (requestedUser.isEmpty()){
             throw new RuntimeException();
         }
