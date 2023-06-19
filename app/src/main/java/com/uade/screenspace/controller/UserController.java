@@ -47,7 +47,8 @@ public class UserController  implements UserManagementApi{
 
     @Override
     public ResponseEntity<Void> forgotPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
-        return null;
+        service.passwordReset(forgotPasswordRequest.getEmail());
+        return ResponseEntity.ok(null);
     }
 
     @Override
