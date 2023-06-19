@@ -26,12 +26,76 @@ public class Cinema {
         theaters = new ArrayList<>();
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Geolocation getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public float getPricePerFunction() {
+        return pricePerFunction;
+    }
+
+    public void setPricePerFunction(float pricePerFunction) {
+        this.pricePerFunction = pricePerFunction;
+    }
+
+    public void setTheaters(List<Theater> theaters) {
+        this.theaters = theaters;
+    }
+
+    public List<ScreeningsByDay> getScreeningsByDay() {
+        return screeningsByDay;
+    }
+
+    public void setScreeningsByDay(List<ScreeningsByDay> screeningsByDay) {
+        this.screeningsByDay = screeningsByDay;
+    }
+
     public void addTheater(Theater theater){
         theaters.add(theater);
     }
 
     public void removeTheater(Theater theater){
         theaters.removeIf(t -> t.getId().equals(theater.getId()));
+    }
+
+    public List<Theater> getTheaters(){
+        return theaters;
     }
 
     public boolean isSameOwner(User user){

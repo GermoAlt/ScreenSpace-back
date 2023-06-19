@@ -905,7 +905,7 @@ paths:
       operationId : searchAvailabilityForScreening
       parameters:
         - in: query
-          name: cinema
+          name: theater
           required: true
           schema:
             type: integer

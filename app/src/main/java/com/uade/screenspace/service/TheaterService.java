@@ -26,9 +26,9 @@ public class TheaterService implements ITheaterService {
         var theaterEntity = TheaterMapper.modelToEntity(theater);
         theaterEntity.setUser(loggedUser);
         cinema.addTheater(theaterEntity);
-        theaterRepository.save(theaterEntity);
+        var response = theaterRepository.save(theaterEntity);
         cinemaRepository.save(cinema);
-        return theaterEntity;
+        return response;
     }
 
     @Override
@@ -48,5 +48,20 @@ public class TheaterService implements ITheaterService {
     @Override
     public Theater findTheater(String theaterId, User loggedUser) {
         return theaterRepository.findByIdAndUser(theaterId, loggedUser).orElseThrow(() -> new EntityNotFound(String.format("Theater with id %s does not exists", theaterId)));
+    }
+
+    @Override
+    public List<Theater> findTheatersByCinema(String cinemaId, User loggedUser) {
+        return cinemaRepository.findByIdAndOwner(cinemaId, loggedUser)
+                .orElseThrow(() -> new EntityNotFound(String.format("Cinema with id %s does not exists", cinemaId)))
+                .getTheaters();
+    }
+
+    @Override
+    public Theater updateTheater(io.screenspace.model.Theater theater, String theaterId, User loggedUser) {
+        if(theaterRepository.findByIdAndUser(theaterId, loggedUser).isPresent()){
+            return theaterRepository.save(TheaterMapper.modelToEntity(theater));
+        }
+        return null;
     }
 }

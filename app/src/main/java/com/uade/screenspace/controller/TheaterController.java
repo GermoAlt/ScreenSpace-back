@@ -1,7 +1,6 @@
 package com.uade.screenspace.controller;
 
 import com.uade.screenspace.entity.User;
-import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.mapper.TheaterMapper;
 import com.uade.screenspace.service.ITheaterService;
 import io.screenspace.api.TheatersApi;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class TheaterController implements TheatersApi {
@@ -43,17 +43,22 @@ public class TheaterController implements TheatersApi {
 
     @Override
     public ResponseEntity<Theater> getTheatherById(String theaterId) {
-        return null;
+        return ResponseEntity.ok(TheaterMapper.entityToModel(service.findTheater(theaterId, getJWTUser())));
     }
 
     @Override
     public ResponseEntity<List<Theater>> getTheathersForCinema(String cinemaId) {
-        return null;
+        return ResponseEntity.ok(
+                service.findTheatersByCinema(cinemaId, getJWTUser())
+                .stream().map(TheaterMapper::entityToModel)
+                .collect(Collectors.toList())
+        );
     }
 
     @Override
     public ResponseEntity<Theater> updateTheaterById(String theaterId, @Valid Theater theater) {
-        return null;
+        var updatedTheater = TheaterMapper.entityToModel(service.updateTheater(theater, theaterId, getJWTUser()));
+        return ResponseEntity.ok(updatedTheater);
     }
 
     private User getJWTUser(){
