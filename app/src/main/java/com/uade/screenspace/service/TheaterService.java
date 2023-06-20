@@ -25,10 +25,10 @@ public class TheaterService implements ITheaterService {
 
         var theaterEntity = TheaterMapper.modelToEntity(theater);
         theaterEntity.setUser(loggedUser);
-        cinema.addTheater(theaterEntity);
-        var response = theaterRepository.save(theaterEntity);
+        var createdTheater = theaterRepository.save(theaterEntity);
+        cinema.addTheater(createdTheater);
         cinemaRepository.save(cinema);
-        return response;
+        return createdTheater;
     }
 
     @Override

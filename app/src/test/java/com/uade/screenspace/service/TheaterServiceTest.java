@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -48,14 +49,23 @@ class TheaterServiceTest {
 
     @Test
     void createTheater() {
+        var createdId = TEST_THEATER_ID.concat("updated");
+        var dbTheater = TheaterMapper.modelToEntity(theater.id(createdId));
         when(cinemaRepository.findByIdAndOwner(TEST_CINEMA_ID, user)).thenReturn(Optional.of(cinema));
-        when(theaterRepository.save(any(com.uade.screenspace.entity.Theater.class))).thenReturn(TheaterMapper.modelToEntity(theater.id(TEST_THEATER_ID.concat("updated"))));
+        when(theaterRepository.save(any(com.uade.screenspace.entity.Theater.class))).thenReturn(dbTheater);
 
         var createdTheater = service.createTheater(theater, TEST_CINEMA_ID, user);
+
+        assertEquals(createdId, theater.getId());
+        assertEquals(theater.getName(), createdTheater.getName());
+        assertEquals(theater.getIsTemporarilyClosed(), createdTheater.isTemporarilyClosed());
+        assertFalse(cinema.getTheaters().isEmpty());
+        assertEquals(cinema.getTheaters().get(0), dbTheater);
     }
 
     @Test
     void deleteTheater() {
+        service.deleteTheater(TEST_THEATER_ID, user);
     }
 
     @Test
