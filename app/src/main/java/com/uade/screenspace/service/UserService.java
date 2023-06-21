@@ -3,6 +3,7 @@ package com.uade.screenspace.service;
 import com.uade.screenspace.entity.Code;
 import com.uade.screenspace.entity.PendingUser;
 import com.uade.screenspace.entity.User;
+import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.repository.PendingUserRepository;
 import com.uade.screenspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class UserService implements IUserService{
     public User confirmUserCreation(String email, String code) {
         List<PendingUser> foundRequests = pendingUserRepository.findAll().stream().filter(p -> p.getCode().getCode().equals(code) && p.getPendingUser().getEmail().equals(email)).collect(Collectors.toList());
         if(foundRequests.isEmpty())
-            throw new RuntimeException("No pending registration for this user");
+            throw new EntityNotFound(String.format("No pending registration for user %s and code %s", email, code));
 
         User createdUser = userRepository.save(foundRequests.get(0).getPendingUser());
         pendingUserRepository.delete(foundRequests.get(0));

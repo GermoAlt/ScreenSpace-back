@@ -1,6 +1,7 @@
 package com.uade.screenspace.service;
 
 import com.uade.screenspace.entity.Movie;
+import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,6 @@ public class MovieService implements IMovieService{
 
     @Override
     public Movie getMovieById(String id) {
-        return movieRepository.findById(id).orElse(null);
+        return movieRepository.findById(id).orElseThrow(() -> new EntityNotFound(String.format("Movie with id %s does not exists", id)));
     }
 }
