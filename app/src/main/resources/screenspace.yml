@@ -978,7 +978,7 @@ paths:
         required: true
         description: ID of movie
         schema:
-          type: integer
+          type: string
 
     get:
       summary: Get movie by ID
@@ -1283,6 +1283,9 @@ components:
         - rating
         - duration
       properties:
+        id:
+          type: string
+          description: Movie id
         title:
           type: string
           description: The title of the movie.
