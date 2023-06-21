@@ -980,7 +980,7 @@ paths:
         required: true
         description: ID of movie
         schema:
-          type: integer
+          type: string
 
     get:
       summary: Get movie by ID
@@ -1286,17 +1286,22 @@ components:
         - genre
         - synopsis
         - rating
+        - duration
       properties:
+        id:
+          type: string
+          description: Movie id
         title:
           type: string
           description: The title of the movie.
         image:
           type: string
-          format: uri
-          description: The URI of the image of the movie.
+          description: Base64 of the image of the movie.
         genre:
-          type: string
-          description: The genre of the movie.
+          type: array
+          items:
+            type: string
+          description: The genres of the movie.
         synopsis:
           type: string
           description: The synopsis of the movie.
@@ -1304,6 +1309,9 @@ components:
           type: number
           format: double
           description: The rating of the movie.
+        duration:
+          type: string
+          description: Duration of the movie, measured in minutes
 
     SeatReserved:
       type: object
