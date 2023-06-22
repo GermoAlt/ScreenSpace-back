@@ -11,14 +11,16 @@ public class Theater {
     private String name;
     private boolean temporarilyClosed;
     private SeatsLayout seatsLayout;
+    private double pricePerFunction;
     private User user;
 
     public Theater() {
     }
 
-    public Theater(String name, boolean temporarilyClosed, SeatsLayout seatsLayout) {
+    public Theater(String name, boolean temporarilyClosed, double pricePerFunction, SeatsLayout seatsLayout) {
         this.name = name;
         this.temporarilyClosed = temporarilyClosed;
+        this.pricePerFunction = pricePerFunction;
         this.seatsLayout = seatsLayout;
     }
 
@@ -60,5 +62,13 @@ public class Theater {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public double getPricePerFunction() {
+        return pricePerFunction;
+    }
+
+    public void setPricePerFunction(double pricePerFunction) {
+        this.pricePerFunction = pricePerFunction;
     }
 }

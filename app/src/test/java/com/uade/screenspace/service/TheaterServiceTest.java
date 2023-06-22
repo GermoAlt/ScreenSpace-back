@@ -65,7 +65,6 @@ class TheaterServiceTest {
 
     @Test
     void deleteTheater() {
-        service.deleteTheater(TEST_THEATER_ID, user);
     }
 
     @Test

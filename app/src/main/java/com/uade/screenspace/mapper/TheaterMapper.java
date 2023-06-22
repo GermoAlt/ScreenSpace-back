@@ -9,6 +9,7 @@ public class TheaterMapper {
         return new com.uade.screenspace.entity.Theater(
                 modelTheater.getName(),
                 modelTheater.getIsTemporarilyClosed(),
+                modelTheater.getPricePerFunction(),
                 new SeatsLayout(
                         modelTheater.getSeatsLayout().getNumRows(),
                         modelTheater.getSeatsLayout().getNumColumns())
@@ -21,6 +22,7 @@ public class TheaterMapper {
                 .id(entityTheater.getId())
                 .name(entityTheater.getName())
                 .isTemporarilyClosed(entityTheater.isTemporarilyClosed())
+                .pricePerFunction(entityTheater.getPricePerFunction())
                 .seatsLayout(new io.screenspace.model.SeatsLayout().numColumns(entityTheater.getSeatsLayout().getNumColumns()).numRows(entityTheater.getSeatsLayout().getNumRows()));
 
     }
