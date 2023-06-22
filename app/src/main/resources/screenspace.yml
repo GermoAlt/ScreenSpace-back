@@ -811,7 +811,7 @@ paths:
         required: true
         description: ID of screening
         schema:
-          type: integer
+          type: string
 
     get:
       summary: Get screening by ID
