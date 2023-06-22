@@ -1153,7 +1153,6 @@ components:
         - address
         - geoLocation
         - owner
-        - pricePerFunction
       properties:
         name:
           type: string
@@ -1164,10 +1163,6 @@ components:
           $ref: '#/components/schemas/GeoLocation'
         owner:
           $ref: '#/components/schemas/User'
-        pricePerFunction:
-          type: number
-          format: double
-          description: The price per function in the cinema.
         screeningsByDay:
           type: array
           items:
@@ -1175,6 +1170,11 @@ components:
 
     Theater:
       type: object
+      required:
+        - name
+        - seatsLayout
+        - isTemporarilyClosed
+        - pricePerFunction
       properties:
         id:
           type: string
@@ -1187,6 +1187,10 @@ components:
         isTemporarilyClosed:
           type: boolean
           description: Indicates if the theater is temporarily closed.
+        pricePerFunction:
+          type: number
+          format: double
+          description: The price per function in this theater.
 
     Address:
       type: object

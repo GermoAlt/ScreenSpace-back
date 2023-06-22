@@ -59,9 +59,9 @@ public class TheaterService implements ITheaterService {
 
     @Override
     public Theater updateTheater(io.screenspace.model.Theater theater, String theaterId, User loggedUser) {
-        if(theaterRepository.findByIdAndUser(theaterId, loggedUser).isPresent()){
-            return theaterRepository.save(TheaterMapper.modelToEntity(theater));
+        if(theaterRepository.findByIdAndUser(theaterId, loggedUser).isEmpty()){
+            throw new EntityNotFound(String.format("Theater with id %s does not exists", theaterId));
         }
-        return null;
+        return theaterRepository.save(TheaterMapper.modelToEntity(theater));
     }
 }
