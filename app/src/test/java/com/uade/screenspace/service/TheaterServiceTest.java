@@ -84,6 +84,7 @@ class TheaterServiceTest {
                 .name("testTheater")
                 .id(TEST_THEATER_ID)
                 .seatsLayout(new SeatsLayout().numRows(1).numColumns(1))
+                .pricePerFunction(2000D)
                 .isTemporarilyClosed(false);
     }
 
