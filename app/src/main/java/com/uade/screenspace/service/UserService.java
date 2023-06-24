@@ -3,6 +3,7 @@ package com.uade.screenspace.service;
 import com.uade.screenspace.entity.Code;
 import com.uade.screenspace.entity.PendingUser;
 import com.uade.screenspace.entity.User;
+import com.uade.screenspace.exceptions.DuplicatedEntity;
 import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.repository.PendingUserRepository;
 import com.uade.screenspace.repository.UserRepository;
@@ -30,6 +31,9 @@ public class UserService implements IUserService{
         String generatedCode;
         var existentPending = pendingUserRepository.findAll();
         Set<String> existentCodes = existentPending.stream().map(p -> p.getCode().getCode()).collect(Collectors.toSet());
+
+        if (existentPending.stream().anyMatch(p -> p.getPendingUser().getEmail().equals(email)) || userRepository.findByEmail(email).isPresent())
+            throw new DuplicatedEntity(String.format("User with email %s already exists", email));
 
         do {
             generatedCode = getCode();
