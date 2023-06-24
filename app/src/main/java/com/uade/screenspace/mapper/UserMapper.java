@@ -8,7 +8,7 @@ public class UserMapper {
         return new User()
                 .email(userEntity.getEmail())
                 .isOwner(userEntity.getOwner())
-                .profilePictureURL(userEntity.getProfilePicUrl())
+                .profilePictureURL(userEntity.getProfilePicBase64())
                 .name(userEntity.getUsername());
     }
 }

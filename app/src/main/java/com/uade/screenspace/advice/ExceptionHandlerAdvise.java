@@ -1,5 +1,6 @@
 package com.uade.screenspace.advice;
 
+import com.uade.screenspace.exceptions.DuplicatedEntity;
 import com.uade.screenspace.exceptions.EntityNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ public class ExceptionHandlerAdvise extends ResponseEntityExceptionHandler {
                 .body(new ExMessage(ex.getMessage()));
     }
 
+    @ExceptionHandler(DuplicatedEntity.class)
+    public ResponseEntity<?> handleDuplicatedEntity(DuplicatedEntity ex){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ExMessage(ex.getMessage()));
+    }
 
     public static class ExMessage {
 
