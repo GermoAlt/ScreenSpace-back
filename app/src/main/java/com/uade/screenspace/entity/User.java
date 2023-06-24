@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,14 +17,14 @@ public class User implements UserDetails{
     private String email;
     private String password;
     private Boolean isOwner;
-    private String profilePicUrl;
+    private String profilePicBase64;
     private List<Code> codes;
 
-    public User(String email, String password, Boolean isOwner, String profilePicUrl) {
+    public User(String email, String password, Boolean isOwner, String profilePicBase64) {
         this.email = email;
         this.password = password;
         this.isOwner = isOwner;
-        this.profilePicUrl = profilePicUrl;
+        this.profilePicBase64 = profilePicBase64;
         this.codes = new ArrayList<>();
     }
 
@@ -52,12 +51,12 @@ public class User implements UserDetails{
         isOwner = owner;
     }
 
-    public String getProfilePicUrl() {
-        return profilePicUrl;
+    public String getProfilePicBase64() {
+        return profilePicBase64;
     }
 
-    public void setProfilePicUrl(String profilePicUrl) {
-        this.profilePicUrl = profilePicUrl;
+    public void setProfilePicBase64(String profilePicBase64) {
+        this.profilePicBase64 = profilePicBase64;
     }
 
     public String getId() {
