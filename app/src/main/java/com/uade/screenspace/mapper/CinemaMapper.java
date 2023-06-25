@@ -2,7 +2,7 @@ package com.uade.screenspace.mapper;
 
 import com.uade.screenspace.entity.Cinema;
 import io.screenspace.model.CreateCinemaRequest;
-import org.apache.ibatis.annotations.Mapper;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
