@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface CinemaRepository extends MongoRepository<Cinema, String> {
     Optional<Cinema> findById(String id);
 
+    List<Cinema> findByOwner(User owner);
+
     Optional<Cinema> findByIdAndOwner(String id, User owner);
 
     Optional<Cinema> findByTheatersContaining(List<Theater> theaters);
