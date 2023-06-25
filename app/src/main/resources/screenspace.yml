@@ -1155,6 +1155,9 @@ components:
         - geoLocation
         - owner
       properties:
+        id:
+          type: string
+          description: Id of the cinema
         name:
           type: string
           description: The name of the cinema.

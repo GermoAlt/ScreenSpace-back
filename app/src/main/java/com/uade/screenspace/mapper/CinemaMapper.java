@@ -5,7 +5,7 @@ import io.screenspace.model.CreateCinemaRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
+import org.springframework.stereotype.Component;
 
 @Mapper
 public interface CinemaMapper {
@@ -28,7 +28,7 @@ public interface CinemaMapper {
     @Mapping(source = "screeningsByDay", target = "screeningsByDay")
     io.screenspace.model.Cinema mapToCinemaModel(Cinema cinema);
 
-    Cinema mapCreateCinemaRequestToCinema (CreateCinemaRequest createCinemaRequest);
+    Cinema mapCreateCinemaRequestToCinema (CreateCinemaRequest createCinemaRequest, Object user);
 
 
 

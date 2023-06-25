@@ -24,9 +24,6 @@ public class CinemasController implements CinemasApi {
     @Autowired
     CinemaService cinemaService;
 
-    @Autowired
-    CinemaMapper cinemaMapper;
-
     public ResponseEntity<List<Cinema>> getCinemas() {
         return (ResponseEntity<List<Cinema>>) cinemaService.getCinemas();
     }
@@ -37,32 +34,29 @@ public class CinemasController implements CinemasApi {
     }
 
     public ResponseEntity<Cinema> getCinemaById(String cinemaId) {
-/*        Cinema cinema = cinemaService.getCinemaById(cinemaId);
+        com.uade.screenspace.entity.Cinema cinema = cinemaService.getCinemaById(cinemaId);
         if (cinema != null) {
-            return ResponseEntity.ok(cinema);
+            return ResponseEntity.ok(CinemaMapper.INSTANCE.mapToCinemaModel(cinema));
         } else {
             return ResponseEntity.notFound().build();
-        }*/
-        return null;
+        }
     }
 
     public ResponseEntity<Cinema> updateCinemaById(String cinemaId, UpdateCinemaRequest request) {
-/*        Cinema updatedCinema = cinemaService.updateCinemaById(cinemaId, request);
+        com.uade.screenspace.entity.Cinema updatedCinema = cinemaService.updateCinemaById(cinemaId, request);
         if (updatedCinema != null) {
-            return ResponseEntity.ok(updatedCinema);
+            return ResponseEntity.ok(CinemaMapper.INSTANCE.mapToCinemaModel(updatedCinema));
         } else {
             return ResponseEntity.notFound().build();
-        }*/
-        return null;
+        }
     }
 
     public ResponseEntity<Void> deleteCinemaById (String cinemaId) {
-     /*   boolean deleted = cinemaService.deleteCinemaById(cinemaId);
+        boolean deleted = cinemaService.deleteCinemaById(cinemaId);
         if (deleted) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
-        }*/
-        return null;
+        }
     }
 }

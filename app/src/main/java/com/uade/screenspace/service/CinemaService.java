@@ -1,11 +1,15 @@
 package com.uade.screenspace.service;
 
 import com.uade.screenspace.entity.Cinema;
+import com.uade.screenspace.exceptions.DuplicatedEntity;
 import com.uade.screenspace.exceptions.EntityNotFound;
+import com.uade.screenspace.mapper.CinemaMapper;
 import com.uade.screenspace.repository.CinemaRepository;
 import io.screenspace.model.CreateCinemaRequest;
 import io.screenspace.model.UpdateCinemaRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +19,8 @@ public class CinemaService implements ICinemaService{
 
     @Autowired
     CinemaRepository cinemaRepository;
+    @Autowired
+    CinemaMapper cinemaMapper;
 
     @Override
     public List<Cinema> getCinemas() {
@@ -29,10 +35,11 @@ public class CinemaService implements ICinemaService{
 
     @Override
     public Cinema createCinema(CreateCinemaRequest cinemaRequest) {
-        Cinema cinema = new Cinema();
-        cinema.setName(cinemaRequest.getName());
-        // Set other properties as needed
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Cinema cinema = CinemaMapper.INSTANCE.mapCreateCinemaRequestToCinema(cinemaRequest, authentication.getPrincipal());
+        if (cinemaRepository.existsByName(cinema.getName())) {
+            throw new DuplicatedEntity("Cinema with the same name already exists");
+        }
         return cinemaRepository.save(cinema);
     }
 
@@ -42,7 +49,7 @@ public class CinemaService implements ICinemaService{
                 .orElseThrow(() -> new EntityNotFound("Cinema not found"));
 
         cinema.setName(cinemaRequest.getName());
-        //TO DO: completar
+        //TODO: completar
         return cinemaRepository.save(cinema);
     }
 
@@ -51,7 +58,6 @@ public class CinemaService implements ICinemaService{
         if (!cinemaRepository.existsById(cinemaId)) {
             throw new EntityNotFound("Cinema not found");
         }
-
         cinemaRepository.deleteById(cinemaId);
         return false;
     }
