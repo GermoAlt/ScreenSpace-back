@@ -18,7 +18,7 @@ public interface IUserService {
 
     void passwordReset(String email);
 
-    boolean confirmPasswordReset(String email, String code);
+    void confirmPasswordReset(String email, String code);
 
     void updatePassword(String email, String password, String code);
 }

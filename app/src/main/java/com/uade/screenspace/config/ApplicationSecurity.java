@@ -3,6 +3,7 @@ package com.uade.screenspace.config;
 import com.uade.screenspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.http.HttpServletResponse;
 
+@Configuration
 @EnableWebSecurity
 public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
@@ -38,7 +40,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
          http.authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/v1/auths","/v1/users","/v1/reset-password/","/v1/reset-password/confirm","/v1/users/confirm-registration")
+                    .antMatchers(HttpMethod.POST, "/v1/auths","/v1/users","/v1/reset-password","/v1/reset-password/confirm","/v1/users/confirm-registration","/v1/forgot-password")
                     .permitAll()
                     .anyRequest().authenticated()
          .and().addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

@@ -323,16 +323,13 @@ paths:
             schema:
               type: object
               properties:
+                token:
+                  type: string
                 email:
                   type: string
-                  format: email
-                code:
-                  type: string
-                password:
-                  type: string
               required:
+                - token
                 - email
-                - password
       responses:
         '204':
           description: Success
@@ -356,13 +353,17 @@ paths:
             schema:
               type: object
               properties:
-                token:
-                  type: string
                 email:
                   type: string
+                  format: email
+                code:
+                  type: string
+                password:
+                  type: string
               required:
-                - token
                 - email
+                - password
+                - code
       responses:
         '204':
           description: Success
