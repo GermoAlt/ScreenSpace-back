@@ -2,6 +2,7 @@ package com.uade.screenspace.controller;
 
 
 import com.uade.screenspace.mapper.CinemaMapper;
+import com.uade.screenspace.mapper.CinemaMapperImpl;
 import com.uade.screenspace.service.CinemaService;
 import io.screenspace.api.CinemasApi;
 import io.screenspace.model.Cinema;
@@ -14,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class CinemasController implements CinemasApi {
@@ -25,7 +28,7 @@ public class CinemasController implements CinemasApi {
     CinemaService cinemaService;
 
     public ResponseEntity<List<Cinema>> getCinemas() {
-        return (ResponseEntity<List<Cinema>>) cinemaService.getCinemas();
+        return ResponseEntity.ok(cinemaService.getCinemas().stream().map(CinemaMapper.INSTANCE::mapToCinemaModel).collect(Collectors.toList()));
     }
 
     public ResponseEntity<Cinema> createCinema(CreateCinemaRequest request) {
