@@ -7,7 +7,6 @@ import com.uade.screenspace.repository.CinemaRepository;
 import com.uade.screenspace.repository.TheaterRepository;
 import io.screenspace.model.SeatsLayout;
 import io.screenspace.model.Theater;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
