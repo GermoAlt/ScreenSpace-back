@@ -17,7 +17,7 @@ public class Cinema {
     private Geolocation geolocation;
     @DBRef
     private User owner;
-    private float pricePerFunction;
+    private double pricePerFunction;
     @DBRef
     private List<Theater> theaters;
     private List<ScreeningsByDay> screeningsByDay;
@@ -66,11 +66,11 @@ public class Cinema {
         this.owner = owner;
     }
 
-    public float getPricePerFunction() {
+    public double getPricePerFunction() {
         return pricePerFunction;
     }
 
-    public void setPricePerFunction(float pricePerFunction) {
+    public void setPricePerFunction(double pricePerFunction) {
         this.pricePerFunction = pricePerFunction;
     }
 

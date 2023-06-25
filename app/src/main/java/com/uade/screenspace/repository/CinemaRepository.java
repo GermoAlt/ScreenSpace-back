@@ -14,4 +14,6 @@ public interface CinemaRepository extends MongoRepository<Cinema, String> {
     Optional<Cinema> findByIdAndOwner(String id, User owner);
 
     Optional<Cinema> findByTheatersContaining(List<Theater> theaters);
+
+    boolean existsByName(String s);
 }
