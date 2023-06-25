@@ -1,222 +1,324 @@
-openapi: 3.0.0
-info:
-  title: ScreenSpace API
-  version: 1.0.6
-  description: API for ScreenSpace cinema application
-servers:
-  - url: https://screenspace.com/api/v1/
+  openapi: 3.0.0
+  info:
+    title: ScreenSpace API
+    version: 1.0.6
+    description: API for ScreenSpace cinema application
+  servers:
+    - url: https://screenspace.com/api/v1/
 
-security:
-  - bearerAuth: []
+  security:
+    - bearerAuth: []
 
-paths:
-  /v1/users:
-    post:
-      summary: Register a new user
-      operationId : createUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: "UserCreationRequest"
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-                isOwner:
-                  type: boolean
-              required:
-                - email
-                - password
-                - isOwner
-      responses:
-        '201':
-          description: User registration request successfully created
+  paths:
+    /v1/users:
+      post:
+        summary: Register a new user
+        operationId : createUser
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                title: "UserCreationRequest"
+                type: object
+                properties:
+                  email:
+                    type: string
+                  password:
+                    type: string
+                  isOwner:
+                    type: boolean
+                required:
+                  - email
+                  - password
+                  - isOwner
+        responses:
+          '201':
+            description: User registration request successfully created
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+          '400':
+            description: Bad request, invalid input
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '503':
+            description: Service unavailable, offline error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - User Management
+    /v1/users/me:
+      get:
+        summary: Get info about logged user
+        operationId: getLoggedUser
+        responses:
+          200:
+            description: User info
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          400:
+            description: Bad request
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          500:
+            description: Internal server error
+          503:
+            description: Service unavailable
+          504:
+            description: Gateway timeout
+        tags:
+          - User Management
+
+      delete:
+        summary: Deletes logged user
+        operationId: deleteLoggedUser
+        responses:
+          200:
+            description: User deleted successfully
+          400:
+            description: Bad request
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          404:
+            description: User not found
+          500:
+            description: Internal server error
+          503:
+            description: Service unavailable
+          504:
+            description: Gateway timeout
+        tags:
+          - User Management
+
+      put:
+        summary: Updates logged user information
+        operationId: putLoggedUser
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        responses:
+          '200':
+            description: User info updated successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '400':
+            description: Bad request
+          '404':
+            description: User not found
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+        tags:
+          - User Management
+
+    /v1/auths:
+      post:
+        summary: Log in an existing user
+        operationId: logUser
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
+                  email:
                     type: string
-        '400':
-          description: Bad request, invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '503':
-          description: Service unavailable, offline error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - User Management
-  /v1/users/me:
-    get:
-      summary: Get info about logged user
-      operationId: getLoggedUser
-      responses:
-        200:
-          description: User info
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: Internal server error
-        503:
-          description: Service unavailable
-        504:
-          description: Gateway timeout
-      tags:
-        - User Management
+                  password:
+                    type: string
+                required:
+                  - email
+                  - password
+        responses:
+          '200':
+            description: User logged in successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LoginResponse'
+          '400':
+            description: Bad request, invalid input
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '503':
+            description: Service unavailable, offline error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - User Management
 
-    delete:
-      summary: Deletes logged user
-      operationId: deleteLoggedUser
-      responses:
-        200:
-          description: User deleted successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized access
+      put:
+        summary: Refresh access token
+        operationId: refreshAccessToken
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        404:
-          description: User not found
-        500:
-          description: Internal server error
-        503:
-          description: Service unavailable
-        504:
-          description: Gateway timeout
-      tags:
-        - User Management
+                type: object
+                properties:
+                  refreshToken:
+                    type: string
+                required:
+                  - refreshToken
+        responses:
+          '200':
+            description: New access token retrieved successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+          '400':
+            description: Bad request, invalid input
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '401':
+            description: Unauthorized access, invalid refresh token
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '503':
+            description: Service unavailable, offline error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - User Management
 
-    put:
-      summary: Updates logged user information
-      operationId: putLoggedUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-      responses:
-        '200':
-          description: User info updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Bad request
-        '404':
-          description: User not found
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-      tags:
-        - User Management
+      delete:
+        summary: Logs out user
+        operationId: logOutUser
+        responses:
+          '200':
+            description: User logged out
+          '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '503':
+            description: Service unavailable, offline error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - User Management
 
-  /v1/auths:
-    post:
-      summary: Log in an existing user
-      operationId: logUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-              required:
-                - email
-                - password
-      responses:
-        '200':
-          description: User logged in successfully
+    /v1/forgot-password:
+      post:
+        summary: Forgot user password
+        operationId: forgotPassword
+        security: []
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '400':
-          description: Bad request, invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '503':
-          description: Service unavailable, offline error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - User Management
+                type: object
+                properties:
+                  email:
+                    type: string
+                    format: email
+                required:
+                  - email
+        responses:
+          '204':
+            description: Success
+          '400':
+            description: Invalid email address provided
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ForgotPasswordError'
+        tags:
+          - User Management
 
-    put:
-      summary: Refresh access token
-      operationId: refreshAccessToken
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                refreshToken:
-                  type: string
-              required:
-                - refreshToken
-      responses:
-        '200':
-          description: New access token retrieved successfully
+    /v1/reset-password:
+      post:
+        summary: Reset user password
+        operationId: resetUserPassword
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
@@ -224,1311 +326,1209 @@ paths:
                 properties:
                   token:
                     type: string
-        '400':
-          description: Bad request, invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized access, invalid refresh token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '503':
-          description: Service unavailable, offline error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - User Management
+                  email:
+                    type: string
+                required:
+                  - token
+                  - email
+        responses:
+          '204':
+            description: Success
+          '400':
+            description: Invalid email address provided
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ResetPasswordError'
+        tags:
+          - User Management
 
-    delete:
-      summary: Logs out user
-      operationId: logOutUser
-      responses:
-        '200':
-          description: User logged out
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '503':
-          description: Service unavailable, offline error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - User Management
-
-  /v1/forgot-password:
-    post:
-      summary: Forgot user password
-      operationId: forgotPassword
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-              required:
-                - email
-      responses:
-        '204':
-          description: Success
-        '400':
-          description: Invalid email address provided
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ForgotPasswordError'
-      tags:
-        - User Management
-
-  /v1/reset-password:
-    post:
-      summary: Reset user password
-      operationId: resetUserPassword
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                email:
-                  type: string
-              required:
-                - token
-                - email
-      responses:
-        '204':
-          description: Success
-        '400':
-          description: Invalid email address provided
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResetPasswordError'
-      tags:
-        - User Management
-
-  /v1/reset-password/confirm:
-    post:
-      summary: Confirm reset password
-      operationId: confirmPasswordReset
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                code:
-                  type: string
-                password:
-                  type: string
-              required:
-                - email
-                - password
-                - code
-      responses:
-        '204':
-          description: Success
-        '400':
-          description: Invalid reset password token or password provided
-          content:
-            application/json:
-              schema:
-                anyOf:
-                  - $ref: '#/components/schemas/ResetPasswordTokenError'
-                  - $ref: '#/components/schemas/UpdatePasswordError'
-      tags:
-        - User Management
-
-  /v1/users/confirm-registration:
-    post:
-      summary: Confirms creation of new user
-      operationId : confirmCreateUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: "ConfirmUserCreationRequest"
-              type: object
-              properties:
-                email:
-                  type: string
-                token:
-                  type: string
-              required:
-                - email
-                - password
-      responses:
-        '201':
-          description: User registration confirmed successfully
+    /v1/reset-password/confirm:
+      post:
+        summary: Confirm reset password
+        operationId: confirmPasswordReset
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
+                  email:
                     type: string
-        '400':
-          description: Bad request, invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '503':
-          description: Service unavailable, offline error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - User Management
+                    format: email
+                  code:
+                    type: string
+                  password:
+                    type: string
+                required:
+                  - email
+                  - password
+                  - code
+        responses:
+          '204':
+            description: Success
+          '400':
+            description: Invalid reset password token or password provided
+            content:
+              application/json:
+                schema:
+                  anyOf:
+                    - $ref: '#/components/schemas/ResetPasswordTokenError'
+                    - $ref: '#/components/schemas/UpdatePasswordError'
+        tags:
+          - User Management
 
-  /v1/cinemas:
-    get:
-      summary: Get list of cinemas
-      operationId : getCinemas
-      responses:
-        '200':
-          description: List of cinemas
+    /v1/users/confirm-registration:
+      post:
+        summary: Confirms creation of new user
+        operationId : confirmCreateUser
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                type: array
-                items:
+                title: "ConfirmUserCreationRequest"
+                type: object
+                properties:
+                  email:
+                    type: string
+                  token:
+                    type: string
+                required:
+                  - email
+                  - password
+        responses:
+          '201':
+            description: User registration confirmed successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+          '400':
+            description: Bad request, invalid input
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '503':
+            description: Service unavailable, offline error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - User Management
+
+    /v1/cinemas:
+      get:
+        summary: Get list of cinemas
+        operationId : getCinemas
+        responses:
+          '200':
+            description: List of cinemas
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Cinema'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - Cinemas
+      post:
+        summary: Add new cinema
+        operationId : createCinema
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCinemaRequest'
+        responses:
+          '200':
+            description: Cinema added successfully
+            content:
+              application/json:
+                schema:
                   $ref: '#/components/schemas/Cinema'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - Cinemas
-    post:
-      summary: Add new cinema
-      operationId : createCinema
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCinemaRequest'
-      responses:
-        '200':
-          description: Cinema added successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cinema'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-      tags:
-        - Cinemas
+          '400':
+            description: Bad request
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+        tags:
+          - Cinemas
 
-  /v1/cinemas/{cinemaId}:
-    parameters:
-      - name: cinemaId
-        in: path
-        required: true
-        description: ID of cinema to delete
-        schema:
-          type: string
-    get:
-      summary: Get cinema details by ID
-      operationId : getCinemaById
-      responses:
-        '200':
-          description: Cinema details
+    /v1/cinemas/{cinemaId}:
+      parameters:
+        - name: cinemaId
+          in: path
+          required: true
+          description: ID of cinema to delete
+          schema:
+            type: string
+      get:
+        summary: Get cinema details by ID
+        operationId : getCinemaById
+        responses:
+          '200':
+            description: Cinema details
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Cinema'
+          '404':
+            description: Cinema not found
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+        tags:
+          - Cinemas
+      put:
+        summary: Update cinema details by ID
+        operationId : updateCinemaById
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Cinema'
-        '404':
-          description: Cinema not found
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-      tags:
-        - Cinemas
-    put:
-      summary: Update cinema details by ID
-      operationId : updateCinemaById
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateCinemaRequest'
-      responses:
-        '200':
-          description: Cinema details updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cinema'
-        '400':
-          description: Bad request
-        '404':
-          description: Cinema not found
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-      tags:
-        - Cinemas
-    delete:
-      summary: Delete cinema by ID
-      operationId : deleteCinemaById
-      responses:
-        '200':
-          description: Cinema deleted successfully
-        '404':
-          description: Cinema not found
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-      tags:
-        - Cinemas
+                $ref: '#/components/schemas/UpdateCinemaRequest'
+        responses:
+          '200':
+            description: Cinema details updated successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Cinema'
+          '400':
+            description: Bad request
+          '404':
+            description: Cinema not found
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+        tags:
+          - Cinemas
+      delete:
+        summary: Delete cinema by ID
+        operationId : deleteCinemaById
+        responses:
+          '200':
+            description: Cinema deleted successfully
+          '404':
+            description: Cinema not found
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+        tags:
+          - Cinemas
 
-  /v1/cinemas/{cinemaId}/theaters:
-    parameters:
-      - name: cinemaId
-        in: path
-        required: true
-        description: ID of cinema
-        schema:
-          type: string
+    /v1/cinemas/{cinemaId}/theaters:
+      parameters:
+        - name: cinemaId
+          in: path
+          required: true
+          description: ID of cinema
+          schema:
+            type: string
 
-    get:
-      summary: Get list of theaters for cinema
-      operationId : getTheathersForCinema
-      responses:
-        200:
-          description: List of theaters
+      get:
+        summary: Get list of theaters for cinema
+        operationId : getTheathersForCinema
+        responses:
+          200:
+            description: List of theaters
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Theater'
+          400:
+            description: Bad request
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          500:
+            description: Internal server error
+          503:
+            description: Service unavailable
+          504:
+            description: Gateway timeout
+        tags:
+          - Theaters
+
+      post:
+        summary: Add new theater to cinema
+        operationId : createTheater
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                type: array
-                items:
+                $ref: '#/components/schemas/Theater'
+        responses:
+          200:
+            description: Theater added successfully
+            content:
+              application/json:
+                schema:
                   $ref: '#/components/schemas/Theater'
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: Internal server error
-        503:
-          description: Service unavailable
-        504:
-          description: Gateway timeout
-      tags:
-        - Theaters
+          400:
+            description: Bad request
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          404:
+            description: Cinema does not exist
+          500:
+            description: Internal server error
+          503:
+            description: Service unavailable
+          504:
+            description: Gateway timeout
+        tags:
+          - Theaters
 
-    post:
-      summary: Add new theater to cinema
-      operationId : createTheater
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Theater'
-      responses:
-        200:
-          description: Theater added successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Theater'
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        404:
-          description: Cinema does not exist
-        500:
-          description: Internal server error
-        503:
-          description: Service unavailable
-        504:
-          description: Gateway timeout
-      tags:
-        - Theaters
-
-  /v1/cinemas/theaters/{theaterId}:
-    parameters:
-      - name: theaterId
-        in: path
-        required: true
-        description: ID of theater
-        schema:
-          type: string
-
-    get:
-      summary: Get details of a theater
-      operationId : getTheatherById
-      responses:
-        '200':
-          description: Theater details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Theater'
-        '404':
-          description: Theater not found
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-      tags:
-        - Theaters
-
-    put:
-      summary: Updates theater info
-      operationId : updateTheaterById
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Theater'
-      responses:
-        200:
-          description: Theater edited successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Theater'
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: Internal server error
-        503:
-          description: Service unavailable
-        504:
-          description: Gateway timeout
-      tags:
-        - Theaters
-
-    delete:
-      summary: Delete theater by ID
-      operationId : deleteTheaterById
-      responses:
-        200:
-          description: Theater deleted successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: Internal server error
-        503:
-          description: Service unavailable
-        504:
-          description: Gateway timeout
-      tags:
-        - Theaters
-
-  /v1/screenings:
-    post:
-      summary: Add a new screening
-      operationId : createScreening
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateScreeningRequest'
-      responses:
-        200:
-          description: Screening added successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Screening'
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - Screenings
-    get:
-      summary: Search screenings
-      operationId : searchScreenings
+    /v1/cinemas/theaters/{theaterId}:
       parameters:
-        - in: query
-          name: cinema
-          required: false
+        - name: theaterId
+          in: path
+          required: true
+          description: ID of theater
           schema:
             type: string
-        - in: query
-          name: movieTitle
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: genre
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: score
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: latitute
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: longitude
-          required: false
-          schema:
-            type: string
-      responses:
-        200:
-          description: List of found screenings
+
+      get:
+        summary: Get details of a theater
+        operationId : getTheatherById
+        responses:
+          '200':
+            description: Theater details
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Theater'
+          '404':
+            description: Theater not found
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+        tags:
+          - Theaters
+
+      put:
+        summary: Updates theater info
+        operationId : updateTheaterById
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                type: array
-                items:
+                $ref: '#/components/schemas/Theater'
+        responses:
+          200:
+            description: Theater edited successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Theater'
+          400:
+            description: Bad request
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          500:
+            description: Internal server error
+          503:
+            description: Service unavailable
+          504:
+            description: Gateway timeout
+        tags:
+          - Theaters
+
+      delete:
+        summary: Delete theater by ID
+        operationId : deleteTheaterById
+        responses:
+          200:
+            description: Theater deleted successfully
+          400:
+            description: Bad request
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          500:
+            description: Internal server error
+          503:
+            description: Service unavailable
+          504:
+            description: Gateway timeout
+        tags:
+          - Theaters
+
+    /v1/screenings:
+      post:
+        summary: Add a new screening
+        operationId : createScreening
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateScreeningRequest'
+        responses:
+          200:
+            description: Screening added successfully
+            content:
+              application/json:
+                schema:
                   $ref: '#/components/schemas/Screening'
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - Screenings
-
-  /v1/screenings/{screeningId}:
-    parameters:
-      - name: screeningId
-        in: path
-        required: true
-        description: ID of screening
-        schema:
-          type: string
-
-    get:
-      summary: Get screening by ID
-      operationId : getScreeningByID
-      responses:
-        '200':
-          description: Screening details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Screening'
-        '404':
-          description: Screening not found
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-      tags:
-        - Screenings
-
-    put:
-      summary: Updates screening information
-      operationId : updateScreening
-      requestBody:
-        required: true
-        content:
-          application/json:
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - Screenings
+      get:
+        summary: Search screenings
+        operationId : searchScreenings
+        parameters:
+          - in: query
+            name: cinema
+            required: false
             schema:
-              $ref: '#/components/schemas/UpdateScreeningRequest'
-      responses:
-        200:
-          description: Screening edited successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Screening'
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        404:
-          description: Screening not found
-        500:
-          description: Internal server error
-        503:
-          description: Service unavailable
-        504:
-          description: Gateway timeout
-      tags:
-        - Screenings
+              type: string
+          - in: query
+            name: movieTitle
+            required: false
+            schema:
+              type: string
+          - in: query
+            name: genre
+            required: false
+            schema:
+              type: string
+          - in: query
+            name: score
+            required: false
+            schema:
+              type: string
+          - in: query
+            name: latitute
+            required: false
+            schema:
+              type: string
+          - in: query
+            name: longitude
+            required: false
+            schema:
+              type: string
+        responses:
+          200:
+            description: List of found screenings
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Screening'
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - Screenings
 
-    delete:
-      summary: Delete screening by ID
-      operationId : deleteScreeningById
-      responses:
-        200:
-          description: Screening deleted successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        404:
-          description: Screening not found
-        500:
-          description: Internal server error
-        503:
-          description: Service unavailable
-        504:
-          description: Gateway timeout
-      tags:
-        - Screenings
-
-  /v1/screenings/availability:
-
-    get:
-      summary: Search free time slots for screenings
-      operationId : searchAvailabilityForScreening
+    /v1/screenings/{screeningId}:
       parameters:
-        - in: query
-          name: theaterId
+        - name: screeningId
+          in: path
           required: true
+          description: ID of screening
           schema:
             type: string
-        - in: query
-          name: movieId
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: date
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: List of free time slots
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TimeSlot'
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - Screenings
 
-  /v1/movies:
-    get:
-      summary: Get movies
-      operationId : getMovies
-      parameters:
-        - in: query
-          name: movieTitle
-          required: false
-          schema:
-            type: string
-      responses:
-        200:
-          description: Movies
+      get:
+        summary: Get screening by ID
+        operationId : getScreeningByID
+        responses:
+          '200':
+            description: Screening details
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Screening'
+          '404':
+            description: Screening not found
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+        tags:
+          - Screenings
+
+      put:
+        summary: Updates screening information
+        operationId : updateScreening
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                type: array
-                items:
+                $ref: '#/components/schemas/UpdateScreeningRequest'
+        responses:
+          200:
+            description: Screening edited successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Screening'
+          400:
+            description: Bad request
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          404:
+            description: Screening not found
+          500:
+            description: Internal server error
+          503:
+            description: Service unavailable
+          504:
+            description: Gateway timeout
+        tags:
+          - Screenings
+
+      delete:
+        summary: Delete screening by ID
+        operationId : deleteScreeningById
+        responses:
+          200:
+            description: Screening deleted successfully
+          400:
+            description: Bad request
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          404:
+            description: Screening not found
+          500:
+            description: Internal server error
+          503:
+            description: Service unavailable
+          504:
+            description: Gateway timeout
+        tags:
+          - Screenings
+
+    /v1/screenings/availability:
+
+      get:
+        summary: Search free time slots for screenings
+        operationId : searchAvailabilityForScreening
+        parameters:
+          - in: query
+            name: theaterId
+            required: true
+            schema:
+              type: string
+          - in: query
+            name: movieId
+            required: true
+            schema:
+              type: string
+          - in: query
+            name: date
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: List of free time slots
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TimeSlot'
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - Screenings
+
+    /v1/movies:
+      get:
+        summary: Get movies
+        operationId : getMovies
+        parameters:
+          - in: query
+            name: movieTitle
+            required: false
+            schema:
+              type: string
+        responses:
+          200:
+            description: Movies
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Movie'
+          404:
+            description: Movies not found
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          500:
+            description: Server error
+          503:
+            description: Service unavailable
+        tags:
+          - Movies
+
+    /v1/movies/{movieId}:
+
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          description: ID of movie
+          schema:
+            type: string
+
+      get:
+        summary: Get movie by ID
+        operationId : getMovieById
+        responses:
+          '200':
+            description: Movie details
+            content:
+              application/json:
+                schema:
                   $ref: '#/components/schemas/Movie'
-        404:
-          description: Movies not found
-        401:
-          description: Unauthorized access
+          '404':
+            description: Movie not found
+          '401':
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+          '500':
+            description: Server error
+          '503':
+            description: Service unavailable
+        tags:
+          - Movies
+
+    /v1/reservations:
+      post:
+        summary: Adds new reservation
+        operationId : createReservation
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: Server error
-        503:
-          description: Service unavailable
-      tags:
-        - Movies
+                $ref: '#/components/schemas/CreateReservationRequest'
+        responses:
+          200:
+            description: Reservation created successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Reservation'
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - Reservations
 
-  /v1/movies/{movieId}:
+    /v1/{movieId}/qualifications:
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          description: ID of cinema
+          schema:
+            type: integer
+      get:
+        summary: Get qualifications for a movie
+        operationId : getQualificationsByMovie
+        responses:
+          200:
+            description: List of qualifications
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Qualification'
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - Qualifications
 
-    parameters:
-      - name: movieId
-        in: path
-        required: true
-        description: ID of movie
-        schema:
-          type: string
-
-    get:
-      summary: Get movie by ID
-      operationId : getMovieById
-      responses:
-        '200':
-          description: Movie details
+      post:
+        summary: Adds a new qualification
+        operationId : createQualification
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Movie'
-        '404':
-          description: Movie not found
-        '401':
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-        '503':
-          description: Service unavailable
-      tags:
-        - Movies
+                $ref: '#/components/schemas/Qualification'
+        responses:
+          200:
+            description: Qualification added successfully
+          401:
+            description: Unauthorized access
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+        tags:
+          - Qualifications
 
-  /v1/reservations:
-    post:
-      summary: Adds new reservation
-      operationId : createReservation
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateReservationRequest'
-      responses:
-        200:
-          description: Reservation created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Reservation'
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - Reservations
-
-  /v1/{movieId}/qualifications:
-    parameters:
-      - name: movieId
-        in: path
-        required: true
-        description: ID of cinema
-        schema:
-          type: integer
-    get:
-      summary: Get qualifications for a movie
-      operationId : getQualificationsByMovie
-      responses:
-        200:
-          description: List of qualifications
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Qualification'
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - Qualifications
-
-    post:
-      summary: Adds a new qualification
-      operationId : createQualification
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Qualification'
-      responses:
-        200:
-          description: Qualification added successfully
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - Qualifications
-
-  /v1/health:
-    get:
-      summary: Check the health of the server
-      operationId : healthCheck
-      description: Returns status 200 if the server is healthy
-      responses:
-        200:
-          description: The server is healthy
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HealthCheckResponse'
-        503:
-          description: The server is unavailable
-      tags:
-        - Healthcheck
+    /v1/health:
+      get:
+        summary: Check the health of the server
+        operationId : healthCheck
+        description: Returns status 200 if the server is healthy
+        responses:
+          200:
+            description: The server is healthy
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/HealthCheckResponse'
+          503:
+            description: The server is unavailable
+        tags:
+          - Healthcheck
 
 
-components:
-  schemas:
-    User:
-      type: object
-      required:
-        - email
-        - isOwner
-      properties:
-        email:
-          type: string
-          format: email
-          description: The email address of the user.
-        isOwner:
-          type: boolean
-          description: Indicates if user is owner
-        profilePictureURL:
-          type: string
-          description: URL to fetch profile picture
-        name:
-          type: string
-          description: Name of the user
-
-    Comment:
-      type: object
-      required:
-        - comment
-      properties:
-        comment:
-          type: string
-
-    Rating:
-      type: object
-      required:
-        - comment
-        - rating
-      properties:
-        comment:
-          $ref: '#/components/schemas/Comment'
-        rating:
-          type: number
-          format: double
-          description: Rating given by the user.
-        user:
-          $ref: '#/components/schemas/User'
-
-    Cinema:
-      type: object
-      required:
-        - name
-        - address
-        - geoLocation
-        - owner
-      properties:
-        id:
-          type: string
-          description: Id of the cinema
-        name:
-          type: string
-          description: The name of the cinema.
-        address:
-          $ref: '#/components/schemas/Address'
-        geoLocation:
-          $ref: '#/components/schemas/GeoLocation'
-        owner:
-          $ref: '#/components/schemas/User'
-        screeningsByDay:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScreeningsByDay'
-
-    Theater:
-      type: object
-      required:
-        - name
-        - seatsLayout
-        - isTemporarilyClosed
-        - pricePerFunction
-      properties:
-        id:
-          type: string
-          description: Id of the theater
-        name:
-          type: string
-          description: Name of the theater
-        seatsLayout:
-          $ref: '#/components/schemas/SeatsLayout'
-        isTemporarilyClosed:
-          type: boolean
-          description: Indicates if the theater is temporarily closed.
-        pricePerFunction:
-          type: number
-          format: double
-          description: The price per function in this theater.
-
-    Address:
-      type: object
-      required:
-        - street
-        - number
-        - neighborhood
-        - city
-        - province
-        - country
-      properties:
-        street:
-          type: string
-          description: The street of the address.
-        number:
-          type: string
-          description: The number of the address.
-        neighborhood:
-          type: string
-          description: The neighborhood of the address.
-        city:
-          type: string
-          description: The city of the address.
-        province:
-          type: string
-          description: The province of the address.
-        country:
-          type: string
-          description: The country of the address.
-
-    GeoLocation:
-      type: object
-      required:
-        - latitude
-        - longitude
-      properties:
-        latitude:
-          type: number
-          format: double
-          description: The latitude of the geolocation.
-        longitude:
-          type: number
-          format: double
-          description: The longitude of the geolocation.
-
-    SeatsLayout:
-      type: object
-      required:
-        - numRows
-        - numColumns
-      properties:
-        numRows:
-          type: integer
-          description: The number of rows in the seats layout.
-        numColumns:
-          type: integer
-          description: The number of columns in the seats layout.
-
-    ScreeningsByDay:
-      type: object
-      required:
-        - date
-        - screenings
-      properties:
-        date:
-          type: string
-          format: date
-          description: The date of the movies.
-        screenings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Screening'
-
-    Screening:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Screening id
-        theater:
-          $ref: '#/components/schemas/Theater'
-        movie:
-          $ref: '#/components/schemas/Movie'
-        seatsReserved:
-          type: object
-          items:
-            $ref: '#/components/schemas/SeatReserved'
-        date:
-          type: string
-          description: date of screening
-
-    Movie:
-      type: object
-      required:
-        - title
-        - image
-        - genre
-        - synopsis
-        - rating
-        - duration
-      properties:
-        id:
-          type: string
-          description: Movie id
-        title:
-          type: string
-          description: The title of the movie.
-        image:
-          type: string
-          description: Base64 of the image of the movie.
-        genre:
-          type: array
-          items:
+  components:
+    schemas:
+      User:
+        type: object
+        required:
+          - email
+          - isOwner
+        properties:
+          email:
             type: string
-          description: The genres of the movie.
-        synopsis:
-          type: string
-          description: The synopsis of the movie.
-        rating:
-          type: number
-          format: double
-          description: The rating of the movie.
-        duration:
-          type: string
-          description: Duration of the movie, measured in minutes
+            format: email
+            description: The email address of the user.
+          isOwner:
+            type: boolean
+            description: Indicates if user is owner
+          profilePictureURL:
+            type: string
+            description: URL to fetch profile picture
+          name:
+            type: string
+            description: Name of the user
 
-    SeatReserved:
-      type: object
-      required:
-        - seatRow
-        - seatColumn
-      properties:
-        seatRow:
-          type: string
-          description: The number of row reserved
-        seatColumn:
-          type: string
-          description: The number of column reserved
+      Comment:
+        type: object
+        required:
+          - comment
+        properties:
+          comment:
+            type: string
 
-    Reservation:
-      type: object
-      required:
-        - cinema
-        - screening
-        - seatsReserved
-        - user
-      properties:
-        code:
-          type: number
-          description: reservation code
-        cinema:
-          $ref: '#/components/schemas/Cinema'
-        screening:
-          $ref: '#/components/schemas/Screening'
-        user:
-          $ref: '#/components/schemas/User'
-        seatsReserved:
-          type: object
-          items:
+      Rating:
+        type: object
+        required:
+          - comment
+          - rating
+        properties:
+          comment:
+            $ref: '#/components/schemas/Comment'
+          rating:
+            type: number
+            format: double
+            description: Rating given by the user.
+          user:
+            $ref: '#/components/schemas/User'
+
+      Cinema:
+        type: object
+        required:
+          - name
+          - address
+          - geoLocation
+          - owner
+        properties:
+          id:
+            type: string
+            description: Id of the cinema
+          name:
+            type: string
+            description: The name of the cinema.
+          address:
+            $ref: '#/components/schemas/Address'
+          geoLocation:
+            $ref: '#/components/schemas/GeoLocation'
+          owner:
+            $ref: '#/components/schemas/User'
+          screeningsByDay:
+            type: array
+            items:
+              $ref: '#/components/schemas/ScreeningsByDay'
+
+      Theater:
+        type: object
+        required:
+          - name
+          - seatsLayout
+          - isTemporarilyClosed
+          - pricePerFunction
+        properties:
+          id:
+            type: string
+            description: Id of the theater
+          name:
+            type: string
+            description: Name of the theater
+          seatsLayout:
+            $ref: '#/components/schemas/SeatsLayout'
+          isTemporarilyClosed:
+            type: boolean
+            description: Indicates if the theater is temporarily closed.
+          pricePerFunction:
+            type: number
+            format: double
+            description: The price per function in this theater.
+
+      Address:
+        type: object
+        required:
+          - street
+          - number
+          - neighborhood
+          - city
+          - province
+          - country
+        properties:
+          street:
+            type: string
+            description: The street of the address.
+          number:
+            type: string
+            description: The number of the address.
+          neighborhood:
+            type: string
+            description: The neighborhood of the address.
+          city:
+            type: string
+            description: The city of the address.
+          province:
+            type: string
+            description: The province of the address.
+          country:
+            type: string
+            description: The country of the address.
+
+      GeoLocation:
+        type: object
+        required:
+          - latitude
+          - longitude
+        properties:
+          latitude:
+            type: number
+            format: double
+            description: The latitude of the geolocation.
+          longitude:
+            type: number
+            format: double
+            description: The longitude of the geolocation.
+
+      SeatsLayout:
+        type: object
+        required:
+          - numRows
+          - numColumns
+        properties:
+          numRows:
+            type: integer
+            description: The number of rows in the seats layout.
+          numColumns:
+            type: integer
+            description: The number of columns in the seats layout.
+
+      ScreeningsByDay:
+        type: object
+        required:
+          - date
+          - screenings
+        properties:
+          date:
+            type: string
+            format: date
+            description: The date of the movies.
+          screenings:
+            type: array
+            items:
+              $ref: '#/components/schemas/Screening'
+
+      Screening:
+        type: object
+        properties:
+          id:
+            type: string
+            description: Screening id
+          theater:
+            $ref: '#/components/schemas/Theater'
+          movie:
+            $ref: '#/components/schemas/Movie'
+          seatsReserved:
+            type: object
+            items:
+              $ref: '#/components/schemas/SeatReserved'
+          date:
+            type: string
+            description: date of screening
+
+      Movie:
+        type: object
+        required:
+          - title
+          - image
+          - genre
+          - synopsis
+          - rating
+          - duration
+        properties:
+          id:
+            type: string
+            description: Movie id
+          title:
+            type: string
+            description: The title of the movie.
+          image:
+            type: string
+            description: Base64 of the image of the movie.
+          genre:
+            type: array
+            items:
+              type: string
+            description: The genres of the movie.
+          synopsis:
+            type: string
+            description: The synopsis of the movie.
+          rating:
+            type: number
+            format: double
+            description: The rating of the movie.
+          duration:
+            type: string
+            description: Duration of the movie, measured in minutes
+
+      SeatReserved:
+        type: object
+        required:
+          - seatRow
+          - seatColumn
+        properties:
+          seatRow:
+            type: string
+            description: The number of row reserved
+          seatColumn:
+            type: string
+            description: The number of column reserved
+
+      Reservation:
+        type: object
+        required:
+          - cinema
+          - screening
+          - seatsReserved
+          - user
+        properties:
+          code:
+            type: number
+            description: reservation code
+          cinema:
+            $ref: '#/components/schemas/Cinema'
+          screening:
+            $ref: '#/components/schemas/Screening'
+          user:
+            $ref: '#/components/schemas/User'
+          seatsReserved:
+            type: object
+            items:
+              $ref: '#/components/schemas/SeatReserved'
+      Error:
+        type: object
+        properties:
+          code:
+            type: integer
+          message:
+            type: string
+        required:
+          - code
+          - message
+      ResetPasswordTokenError:
+        type: object
+        properties:
+          code:
+            type: string
+            enum: [reset_password_token_error]
+          message:
+            type: string
+            description: Describes the cause of the error.
+            example: The provided reset password token is invalid or has expired.
+
+      UpdatePasswordError:
+        type: object
+        properties:
+          code:
+            type: string
+            enum: [update_password_error]
+          message:
+            type: string
+            description: Describes the cause of the error.
+            example: The provided password is not valid.
+
+      ResetPasswordError:
+        type: object
+        properties:
+          code:
+            type: string
+            enum: [reset_password_error]
+          message:
+            type: string
+            description: Describes the cause of the error.
+            example: The provided email address does not match any account.
+
+      ForgotPasswordError:
+        type: object
+        properties:
+          error:
+            type: string
+            description: The error message.
+        required:
+          - error
+
+      HealthCheckResponse:
+        type: object
+        properties:
+          status:
+            type: string
+            description: Status of the server
+          details:
+            type: object
+            description: Additional details about the server's status
+
+      Qualification:
+        type: object
+        properties:
+          rating:
+            $ref: '#/components/schemas/Rating'
+          comment:
+            $ref: '#/components/schemas/Comment'
+
+      TimeSlot:
+        type: object
+        properties:
+          start:
+            type: string
+            description: beginning of time slot
+          end:
+            type: string
+            description: end of time slot
+
+      LoginResponse:
+        type: object
+        properties:
+          token:
+            type: string
+            description: login token
+          refreshToken:
+            type: string
+            description: refresh token
+
+      CreateReservationRequest:
+        type: object
+        properties:
+          cinemaId:
+            type: string
+            description: Id of cinema
+          screeningId:
+            type: string
+            description: Id of screening
+          seatsReserved:
             $ref: '#/components/schemas/SeatReserved'
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-      required:
-        - code
-        - message
-    ResetPasswordTokenError:
-      type: object
-      properties:
-        code:
-          type: string
-          enum: [reset_password_token_error]
-        message:
-          type: string
-          description: Describes the cause of the error.
-          example: The provided reset password token is invalid or has expired.
 
-    UpdatePasswordError:
-      type: object
-      properties:
-        code:
-          type: string
-          enum: [update_password_error]
-        message:
-          type: string
-          description: Describes the cause of the error.
-          example: The provided password is not valid.
+      CreateScreeningRequest:
+        type: object
+        properties:
+          movieId:
+            type: string
+            description: Id of movie
+          theaterId:
+            type: string
+            description: Id of theater
+          date:
+            type: string
+            description: Date of the screening
 
-    ResetPasswordError:
-      type: object
-      properties:
-        code:
-          type: string
-          enum: [reset_password_error]
-        message:
-          type: string
-          description: Describes the cause of the error.
-          example: The provided email address does not match any account.
+      CreateCinemaRequest:
+        type: object
+        required:
+          - name
+          - address
+          - geoLocation
+          - pricePerFunction
+        properties:
+          name:
+            type: string
+            description: The name of the cinema.
+          address:
+            $ref: '#/components/schemas/Address'
+          geoLocation:
+            $ref: '#/components/schemas/GeoLocation'
+          pricePerFunction:
+            type: number
+            format: double
+            description: The price per function in the cinema.
 
-    ForgotPasswordError:
-      type: object
-      properties:
-        error:
-          type: string
-          description: The error message.
-      required:
-        - error
+      UpdateCinemaRequest:
+        type: object
+        required:
+          - name
+          - address
+          - geoLocation
+          - pricePerFunction
+        properties:
+          name:
+            type: string
+            description: The name of the cinema.
+          address:
+            $ref: '#/components/schemas/Address'
+          geoLocation:
+            $ref: '#/components/schemas/GeoLocation'
+          pricePerFunction:
+            type: number
+            format: double
+            description: The price per function in the cinema.
 
-    HealthCheckResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Status of the server
-        details:
-          type: object
-          description: Additional details about the server's status
+      UpdateScreeningRequest:
+        type: object
+        properties:
+          movieId:
+            type: string
+            description: Id of movie
+          theaterId:
+            type: string
+            description: Id of theater
+          date:
+            type: string
+            description: Date of the screening
 
-    Qualification:
-      type: object
-      properties:
-        rating:
-          $ref: '#/components/schemas/Rating'
-        comment:
-          $ref: '#/components/schemas/Comment'
-
-    TimeSlot:
-      type: object
-      properties:
-        start:
-          type: string
-          description: beginning of time slot
-        end:
-          type: string
-          description: end of time slot
-
-    LoginResponse:
-      type: object
-      properties:
-        token:
-          type: string
-          description: login token
-        refreshToken:
-          type: string
-          description: refresh token
-
-    CreateReservationRequest:
-      type: object
-      properties:
-        cinemaId:
-          type: string
-          description: Id of cinema
-        screeningId:
-          type: string
-          description: Id of screening
-        seatsReserved:
-          $ref: '#/components/schemas/SeatReserved'
-
-    CreateScreeningRequest:
-      type: object
-      properties:
-        movieId:
-          type: string
-          description: Id of movie
-        theaterId:
-          type: string
-          description: Id of theater
-        date:
-          type: string
-          description: Date of the screening
-
-    CreateCinemaRequest:
-      type: object
-      required:
-        - name
-        - address
-        - geoLocation
-        - pricePerFunction
-      properties:
-        name:
-          type: string
-          description: The name of the cinema.
-        address:
-          $ref: '#/components/schemas/Address'
-        geoLocation:
-          $ref: '#/components/schemas/GeoLocation'
-        pricePerFunction:
-          type: number
-          format: double
-          description: The price per function in the cinema.
-
-    UpdateCinemaRequest:
-      type: object
-      required:
-        - name
-        - address
-        - geoLocation
-        - pricePerFunction
-      properties:
-        name:
-          type: string
-          description: The name of the cinema.
-        address:
-          $ref: '#/components/schemas/Address'
-        geoLocation:
-          $ref: '#/components/schemas/GeoLocation'
-        pricePerFunction:
-          type: number
-          format: double
-          description: The price per function in the cinema.
-
-    UpdateScreeningRequest:
-      type: object
-      properties:
-        movieId:
-          type: string
-          description: Id of movie
-        theaterId:
-          type: string
-          description: Id of theater
-        date:
-          type: string
-          description: Date of the screening
-
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
