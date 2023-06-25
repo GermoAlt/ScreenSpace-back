@@ -1480,7 +1480,6 @@
           - name
           - address
           - geoLocation
-          - pricePerFunction
         properties:
           name:
             type: string
@@ -1489,18 +1488,12 @@
             $ref: '#/components/schemas/Address'
           geoLocation:
             $ref: '#/components/schemas/GeoLocation'
-          pricePerFunction:
-            type: number
-            format: double
-            description: The price per function in the cinema.
-
       UpdateCinemaRequest:
         type: object
         required:
           - name
           - address
           - geoLocation
-          - pricePerFunction
         properties:
           name:
             type: string
@@ -1509,10 +1502,6 @@
             $ref: '#/components/schemas/Address'
           geoLocation:
             $ref: '#/components/schemas/GeoLocation'
-          pricePerFunction:
-            type: number
-            format: double
-            description: The price per function in the cinema.
 
       UpdateScreeningRequest:
         type: object

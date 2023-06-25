@@ -3,6 +3,7 @@ package com.uade.screenspace.mapper;
 import com.uade.screenspace.entity.*;
 import io.screenspace.model.CreateCinemaRequest;
 import io.screenspace.model.GeoLocation;
+import io.screenspace.model.UpdateCinemaRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +25,6 @@ public class CinemaMapperImpl implements CinemaMapper{
         cinemaModel.setName(cinema.getName());
         cinemaModel.setAddress(mapToAddressModel(cinema.getAddress()));
         cinemaModel.setGeoLocation(mapToGeolocationModel(cinema.getGeolocation()));
-        /*cinemaModel.setScreeningsByDay(mapToScreeningsByDayModel(cinema.getScreeningsByDay()));*/
         cinemaModel.setOwner(mapToOwnerModel(cinema.getOwner()));
         return cinemaModel;
     }
@@ -35,8 +35,16 @@ public class CinemaMapperImpl implements CinemaMapper{
         cinema.setName(createCinemaRequest.getName());
         cinema.setAddress(mapToAddress(createCinemaRequest.getAddress()));
         cinema.setGeolocation(mapToGeolocation(createCinemaRequest.getGeoLocation()));
-        cinema.setPricePerFunction(createCinemaRequest.getPricePerFunction());
         cinema.setOwner((User) user);
+        return cinema;
+    }
+
+    @Override
+    public Cinema mapCreateCinemaToUpdateCinema(UpdateCinemaRequest updateCinemaRequest) {
+        Cinema cinema = new Cinema();
+        cinema.setAddress(mapToAddress(updateCinemaRequest.getAddress()));
+        cinema.setName(updateCinemaRequest.getName());
+        cinema.setGeolocation(mapToGeolocation(updateCinemaRequest.getGeoLocation()));
         return cinema;
     }
 

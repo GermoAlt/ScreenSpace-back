@@ -11,5 +11,5 @@ public interface ICinemaService {
     Cinema createCinema(CreateCinemaRequest request);
     Cinema getCinemaById(String cinemaId);
     Cinema updateCinemaById(String cinemaId, UpdateCinemaRequest request);
-    boolean deleteCinemaById(String cinemaId);
+    void deleteCinemaById(String cinemaId);
 }
