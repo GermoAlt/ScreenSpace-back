@@ -35,19 +35,8 @@ public class UserController  implements UserManagementApi{
     }
 
     @Override
-    public ResponseEntity<Void> confirmPasswordReset(@Valid ConfirmPasswordResetRequest confirmPasswordResetRequest) {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<Void> deleteLoggedUser() {
         service.deleteUser(getJWTUser());
-        return ResponseEntity.ok(null);
-    }
-
-    @Override
-    public ResponseEntity<Void> forgotPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
-        service.passwordReset(forgotPasswordRequest.getEmail());
         return ResponseEntity.ok(null);
     }
 
@@ -86,8 +75,21 @@ public class UserController  implements UserManagementApi{
     }
 
     @Override
-    public ResponseEntity<Void> resetUserPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
-        return null;
+    public ResponseEntity<Void> resetUserPassword(@Valid ResetUserPasswordRequest resetUserPasswordRequest) {
+        service.updatePassword(resetUserPasswordRequest.getEmail(), resetUserPasswordRequest.getPassword(), resetUserPasswordRequest.getCode());
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    public ResponseEntity<Void> forgotPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
+        service.passwordReset(forgotPasswordRequest.getEmail());
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    public ResponseEntity<Void> confirmPasswordReset(@Valid ConfirmPasswordResetRequest confirmPasswordResetRequest) {
+        service.confirmPasswordReset(confirmPasswordResetRequest.getEmail(), confirmPasswordResetRequest.getToken());
+        return ResponseEntity.ok(null);
     }
 
     @Override

@@ -117,6 +117,17 @@ public class UserService implements IUserService{
                 .anyMatch(c -> c.getCode().equals(code) && c.getExpirationDate().isAfter(Instant.now()));
     }
 
+    @Override
+    public void updatePassword(String email, String password,  String code) {
+        var requestedUser = userRepository.findByEmail(email);
+        if (requestedUser.isEmpty()){
+            throw new RuntimeException();
+        }
+        requestedUser.get().setPassword(password);
+        requestedUser.get().getCodes().removeIf(c -> c.getCode().equals(code));
+        userRepository.save(requestedUser.get());
+    }
+
     private String getCode() {
         Random rnd = new Random();
         int number = rnd.nextInt(999999);

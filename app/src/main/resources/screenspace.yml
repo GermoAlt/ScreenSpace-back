@@ -326,8 +326,13 @@ paths:
                 email:
                   type: string
                   format: email
+                code:
+                  type: string
+                password:
+                  type: string
               required:
                 - email
+                - password
       responses:
         '204':
           description: Success
@@ -353,12 +358,11 @@ paths:
               properties:
                 token:
                   type: string
-                password:
+                email:
                   type: string
-                  format: password
               required:
                 - token
-                - password
+                - email
       responses:
         '204':
           description: Success
