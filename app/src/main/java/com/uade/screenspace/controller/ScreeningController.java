@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class ScreeningController implements ScreeningsApi {
 
     @Override
     public ResponseEntity<List<TimeSlot>> searchAvailabilityForScreening(@NotNull @Valid String theater, @NotNull @Valid String movieTitle, @NotNull @Valid String date) {
-        return null;
+        return ResponseEntity.ok(screeningService.searchAvailabilityForScreening(theater, movieTitle, date));
     }
 
     @Override
@@ -55,6 +54,6 @@ public class ScreeningController implements ScreeningsApi {
 
     @Override
     public ResponseEntity<Screening> updateScreening(String screeningId, @Valid UpdateScreeningRequest updateScreeningRequest) {
-        return null;
+        return ResponseEntity.ok(ScreeningMapper.entityToModel(screeningService.updateScreening(screeningId, updateScreeningRequest)));
     }
 }

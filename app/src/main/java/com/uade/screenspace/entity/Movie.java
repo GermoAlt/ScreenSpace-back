@@ -14,7 +14,7 @@ public class Movie {
     private String title;
     private List<String> genre;
     private String synopsis;
-    private String duration;
+    private int duration;
     private String base64Image;
     private List<Rating> ratings;
 
@@ -62,11 +62,11 @@ public class Movie {
         this.ratings = ratings;
     }
 
-    public String getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 

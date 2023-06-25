@@ -905,12 +905,12 @@ paths:
       operationId : searchAvailabilityForScreening
       parameters:
         - in: query
-          name: theater
+          name: theaterId
           required: true
           schema:
             type: string
         - in: query
-          name: movieTitle
+          name: movieId
           required: true
           schema:
             type: string
@@ -1516,7 +1516,6 @@ components:
           description: Id of theater
         date:
           type: string
-          format: date-time
           description: Date of the screening
 
   securitySchemes:

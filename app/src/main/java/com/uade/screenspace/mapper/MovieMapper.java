@@ -12,7 +12,7 @@ public class MovieMapper {
 
     public static io.screenspace.model.Movie entityToModel(Movie entityMovie){
         return new io.screenspace.model.Movie()
-                .duration(entityMovie.getDuration())
+                .duration(entityMovie.getDuration().toString())
                 .image(entityMovie.getBase64Image())
                 .rating(5D)
                 .synopsis(entityMovie.getSynopsis())

@@ -2,6 +2,7 @@ package com.uade.screenspace.advice;
 
 import com.uade.screenspace.exceptions.DuplicatedEntity;
 import com.uade.screenspace.exceptions.EntityNotFound;
+import com.uade.screenspace.exceptions.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,6 +21,13 @@ public class ExceptionHandlerAdvise extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DuplicatedEntity.class)
     public ResponseEntity<?> handleDuplicatedEntity(DuplicatedEntity ex){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ExMessage(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ValidationError.class)
+    public ResponseEntity<?> handleValidationError(ValidationError ex){
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ExMessage(ex.getMessage()));

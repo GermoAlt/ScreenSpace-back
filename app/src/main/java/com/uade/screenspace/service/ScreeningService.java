@@ -1,22 +1,26 @@
 package com.uade.screenspace.service;
 
 import com.uade.screenspace.auth.LoggedUserGetter;
+import com.uade.screenspace.entity.Movie;
 import com.uade.screenspace.entity.Screening;
 import com.uade.screenspace.exceptions.EntityNotFound;
+import com.uade.screenspace.exceptions.ValidationError;
 import com.uade.screenspace.repository.CinemaRepository;
 import com.uade.screenspace.repository.MovieRepository;
 import com.uade.screenspace.repository.ScreeningRepository;
 import com.uade.screenspace.repository.TheaterRepository;
 import io.screenspace.model.CreateScreeningRequest;
 import io.screenspace.model.TimeSlot;
-import io.swagger.models.auth.In;
+import io.screenspace.model.UpdateScreeningRequest;
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +32,6 @@ public class ScreeningService implements IScreeningService {
 
     @Autowired
     private ScreeningRepository screeningRepository;
-    @Autowired
-    private CinemaRepository cinemaRepository;
     @Autowired
     private MovieRepository movieRepository;
     @Autowired
@@ -44,6 +46,10 @@ public class ScreeningService implements IScreeningService {
         screening.setTheater(theaterRepository.findById(createScreeningRequest.getTheaterId()).orElseThrow(() -> new EntityNotFound(String.format("No theater found with id %s", createScreeningRequest.getTheaterId()))));
         screening.setMovie(movieRepository.findById(createScreeningRequest.getMovieId()).orElseThrow(() -> new EntityNotFound(String.format("No movie found with id %s", createScreeningRequest.getMovieId()))));
         screening.setDate(DateTime.parse(createScreeningRequest.getDate(), DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss")));
+
+        var existentScreenings = findScreeningsForTheaterAndDate(createScreeningRequest.getTheaterId(), createScreeningRequest.getDate());
+        checkOverlapping(screening, existentScreenings);
+
         return screeningRepository.save(screening);
     }
 
@@ -70,7 +76,7 @@ public class ScreeningService implements IScreeningService {
             screenings = screenings.stream().filter(s -> s.getTheater().getCinema().getId().equals(cinema)).collect(Collectors.toList());
         }
         if (movieTitle != null){
-            screenings = screenings.stream().filter(s -> s.getMovie().getTitle().equals(cinema)).collect(Collectors.toList());
+            screenings = screenings.stream().filter(s -> s.getMovie().getTitle().contains(movieTitle)).collect(Collectors.toList());
         }
         return screenings;
     }
@@ -78,17 +84,68 @@ public class ScreeningService implements IScreeningService {
     @Override
     public List<TimeSlot> searchAvailabilityForScreening(String theater, String movieTitle, String date) {
         DateTime searchedDate = DateTime.parse(date, DateTimeFormat.forPattern("dd/MM/yyyy")).withTimeAtStartOfDay();
-        var screenings = screeningRepository.findAll()
-                .stream()
-                .filter(s -> s.getTheater().getId().equals(theater) && s.getDate().withTimeAtStartOfDay().equals(searchedDate))
-                .collect(Collectors.toList());
+        Movie movie = movieRepository.findById(movieTitle).orElseThrow(() -> new EntityNotFound(String.format("No movie found with id %s", movieTitle)));
+        List<TimeSlot> timeSlots = new ArrayList<>();
+        int movieDuration = movie.getDuration();
+        var screenings = findScreeningsForTheaterAndDate(theater, date.concat(" 00:00:00"));
         if (screenings.isEmpty()){
             return List.of(new TimeSlot().start(START_HOUR).end(END_HOUR));
         }
 
+        LocalTime initialTime = searchedDate.withTime(LocalTime.parse(START_HOUR, DateTimeFormat.forPattern("HH:mm:ss"))).toLocalTime();
+        LocalTime endTime = searchedDate.withTime(LocalTime.parse(END_HOUR, DateTimeFormat.forPattern("HH:mm:ss"))).toLocalTime();
         for (Screening screening : screenings){
-            LocalTime ScreeningStart = screening.getDate().toLocalTime();
+            LocalTime screeningStart = screening.getDate().toLocalTime();
+            int freeMinutes = Minutes.minutesBetween(initialTime, screeningStart).getMinutes();
+            if (freeMinutes >= movieDuration){
+                timeSlots.add(new TimeSlot().start(initialTime.toString(DateTimeFormat.forPattern("HH:mm:ss"))).end(screeningStart.toString(DateTimeFormat.forPattern("HH:mm:ss"))));
+            }
+            initialTime = screeningStart.plusMinutes(screening.getMovie().getDuration());
         }
-        return null;
+
+        if(Minutes.minutesBetween(initialTime, endTime).getMinutes() >= movieDuration){
+            timeSlots.add(new TimeSlot().start(initialTime.toString(DateTimeFormat.forPattern("HH:mm:ss"))).end(endTime.toString(DateTimeFormat.forPattern("HH:mm:ss"))));
+        }
+
+        return timeSlots;
+    }
+
+    @Override
+    public Screening updateScreening(String screeningId, UpdateScreeningRequest updateScreeningRequest) {
+        var existentScreening = screeningRepository.findById(screeningId).orElseThrow(() -> new EntityNotFound(String.format("No screening found with id %s", screeningId)));
+        existentScreening.setTheater(theaterRepository.findById(updateScreeningRequest.getTheaterId()).orElseThrow(() -> new EntityNotFound(String.format("No theater found with id %s", updateScreeningRequest.getTheaterId()))));
+        existentScreening.setMovie(movieRepository.findById(updateScreeningRequest.getMovieId()).orElseThrow(() -> new EntityNotFound(String.format("No movie found with id %s", updateScreeningRequest.getMovieId()))));
+        existentScreening.setDate(DateTime.parse(updateScreeningRequest.getDate(), DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss")));
+
+        var existentScreenings = findScreeningsForTheaterAndDate(updateScreeningRequest.getTheaterId(), updateScreeningRequest.getDate()).stream().filter(c -> !c.getId().equals(existentScreening.getId())).collect(Collectors.toList());
+        checkOverlapping(existentScreening, existentScreenings);
+
+        return screeningRepository.save(existentScreening);
+    }
+
+    private List<Screening> findScreeningsForTheaterAndDate(String theater, String date){
+        DateTime searchedDate = DateTime.parse(date, DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss")).withTimeAtStartOfDay();
+        return screeningRepository.findAll()
+                .stream()
+                .filter(s -> s.getTheater().getId().equals(theater) && s.getDate().withTimeAtStartOfDay().equals(searchedDate))
+                .sorted(Comparator.comparing(Screening::getDate))
+                .collect(Collectors.toList());
+    }
+
+    private void checkOverlapping(Screening screening, List<Screening> existentScreenings) {
+        LocalTime start = screening.getDate().toLocalTime();
+        LocalTime end = screening.getDate().toLocalTime().plusMinutes(screening.getMovie().getDuration());
+
+        for (Screening existentScreening : existentScreenings){
+            LocalTime existentScreeningStart = existentScreening.getDate().toLocalTime();
+            LocalTime existentScreeningEnd = existentScreeningStart.plusMinutes(existentScreening.getMovie().getDuration());
+            if (isOverlapping(start, end, existentScreeningStart, existentScreeningEnd)){
+                throw new ValidationError(String.format("Movie %s already has a screening for this timeslot", screening.getMovie().getTitle()));
+            }
+        }
+    }
+
+    private boolean isOverlapping(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
+        return !start1.isAfter(end2) && !start2.isAfter(end1);
     }
 }
