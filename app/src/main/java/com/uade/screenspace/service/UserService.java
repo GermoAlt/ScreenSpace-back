@@ -87,7 +87,7 @@ public class UserService implements IUserService{
         String generatedCode;
         var requestedUser = userRepository.findByEmail(email);
         if (requestedUser.isEmpty()){
-            throw new RuntimeException();
+            throw new EntityNotFound(String.format("Email %s does not exists", email));
         }
         Set<String> existentCodes = requestedUser.get().getCodes()
                 .stream()
