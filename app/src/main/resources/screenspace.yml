@@ -760,7 +760,7 @@ paths:
           name: cinema
           required: false
           schema:
-            type: integer
+            type: string
         - in: query
           name: movieTitle
           required: false
@@ -811,7 +811,7 @@ paths:
         required: true
         description: ID of screening
         schema:
-          type: integer
+          type: string
 
     get:
       summary: Get screening by ID
@@ -905,12 +905,12 @@ paths:
       operationId : searchAvailabilityForScreening
       parameters:
         - in: query
-          name: theater
+          name: theaterId
           required: true
           schema:
-            type: integer
+            type: string
         - in: query
-          name: movieTitle
+          name: movieId
           required: true
           schema:
             type: string
@@ -919,7 +919,6 @@ paths:
           required: true
           schema:
             type: string
-            format: date
       responses:
         200:
           description: List of free time slots
@@ -1267,19 +1266,19 @@ components:
     Screening:
       type: object
       properties:
+        id:
+          type: string
+          description: Screening id
         theater:
           $ref: '#/components/schemas/Theater'
         movie:
-          type: object
-          items:
-            $ref: '#/components/schemas/Movie'
+          $ref: '#/components/schemas/Movie'
         seatsReserved:
           type: object
           items:
             $ref: '#/components/schemas/SeatReserved'
         date:
           type: string
-          format: date-time
           description: date of screening
 
     Movie:
@@ -1324,10 +1323,10 @@ components:
         - seatColumn
       properties:
         seatRow:
-          type: number
+          type: string
           description: The number of row reserved
         seatColumn:
-          type: number
+          type: string
           description: The number of column reserved
 
     Reservation:
@@ -1427,11 +1426,9 @@ components:
         start:
           type: string
           description: beginning of time slot
-          format: date-time
         end:
           type: string
           description: end of time slot
-          format: date-time
 
     LoginResponse:
       type: object
@@ -1466,7 +1463,6 @@ components:
           description: Id of theater
         date:
           type: string
-          format: date-time
           description: Date of the screening
 
     CreateCinemaRequest:
@@ -1520,7 +1516,6 @@ components:
           description: Id of theater
         date:
           type: string
-          format: date-time
           description: Date of the screening
 
   securitySchemes:

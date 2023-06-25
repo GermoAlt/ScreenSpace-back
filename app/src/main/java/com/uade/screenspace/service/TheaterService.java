@@ -25,6 +25,7 @@ public class TheaterService implements ITheaterService {
 
         var theaterEntity = TheaterMapper.modelToEntity(theater);
         theaterEntity.setUser(loggedUser);
+        theaterEntity.setCinema(cinema);
         var createdTheater = theaterRepository.save(theaterEntity);
         cinema.addTheater(createdTheater);
         cinemaRepository.save(cinema);

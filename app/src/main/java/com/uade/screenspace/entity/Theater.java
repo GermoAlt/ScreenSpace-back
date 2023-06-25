@@ -1,6 +1,7 @@
 package com.uade.screenspace.entity;
 
 import nonapi.io.github.classgraph.json.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("theaters")
@@ -12,6 +13,9 @@ public class Theater {
     private boolean temporarilyClosed;
     private SeatsLayout seatsLayout;
     private double pricePerFunction;
+    @DBRef
+    private Cinema cinema;
+    @DBRef
     private User user;
 
     public Theater() {
@@ -70,5 +74,13 @@ public class Theater {
 
     public void setPricePerFunction(double pricePerFunction) {
         this.pricePerFunction = pricePerFunction;
+    }
+
+    public Cinema getCinema() {
+        return cinema;
+    }
+
+    public void setCinema(Cinema cinema) {
+        this.cinema = cinema;
     }
 }

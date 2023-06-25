@@ -3,6 +3,7 @@ package com.uade.screenspace.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class User implements UserDetails{
     public void addPasswordResetCode(Code code){
         codes.add(code);
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
