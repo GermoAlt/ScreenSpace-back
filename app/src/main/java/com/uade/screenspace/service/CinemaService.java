@@ -47,9 +47,7 @@ public class CinemaService implements ICinemaService{
     public Cinema updateCinemaById(String cinemaId, UpdateCinemaRequest cinemaRequest) {
         Cinema cinema = cinemaRepository.findById(cinemaId)
                 .orElseThrow(() -> new EntityNotFound("Cinema not found"));
-
-        cinema.setName(cinemaRequest.getName());
-        //TODO: completar
+        CinemaMapper.INSTANCE.mapCreateCinemaToUpdateCinema(cinemaRequest);
         return cinemaRepository.save(cinema);
     }
 

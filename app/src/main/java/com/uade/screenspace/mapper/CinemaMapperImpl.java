@@ -3,6 +3,7 @@ package com.uade.screenspace.mapper;
 import com.uade.screenspace.entity.*;
 import io.screenspace.model.CreateCinemaRequest;
 import io.screenspace.model.GeoLocation;
+import io.screenspace.model.UpdateCinemaRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,6 +39,11 @@ public class CinemaMapperImpl implements CinemaMapper{
         cinema.setPricePerFunction(createCinemaRequest.getPricePerFunction());
         cinema.setOwner((User) user);
         return cinema;
+    }
+
+    @Override
+    public Cinema mapCreateCinemaToUpdateCinema(UpdateCinemaRequest updateCinemaRequest) {
+        return null;
     }
 
     private Address mapToAddress(io.screenspace.model.Address addressModel) {
