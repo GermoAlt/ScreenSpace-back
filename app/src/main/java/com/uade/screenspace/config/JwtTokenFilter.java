@@ -30,7 +30,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     "/v1/auths-POST",
                     "/v1/auths-PUT",
                     "/v1/users-POST",
-                    "v1/forgot-password-POST",
                     "/v1/reset-password-POST",
                     "/v1/reset-password/confirm-POST",
                     "/v1/users/confirm-registration-POST"

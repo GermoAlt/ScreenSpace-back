@@ -3,6 +3,7 @@ package com.uade.screenspace.controller;
 
 import com.uade.screenspace.entity.PendingUser;
 import com.uade.screenspace.entity.RefreshToken;
+import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.mapper.UserMapper;
 import com.uade.screenspace.service.IAuthService;
 import com.uade.screenspace.service.IUserService;
@@ -11,6 +12,7 @@ import io.screenspace.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,19 +37,8 @@ public class UserController  implements UserManagementApi{
     }
 
     @Override
-    public ResponseEntity<Void> confirmPasswordReset(@Valid ConfirmPasswordResetRequest confirmPasswordResetRequest) {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<Void> deleteLoggedUser() {
         service.deleteUser(getJWTUser());
-        return ResponseEntity.ok(null);
-    }
-
-    @Override
-    public ResponseEntity<Void> forgotPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
-        service.passwordReset(forgotPasswordRequest.getEmail());
         return ResponseEntity.ok(null);
     }
 
@@ -65,7 +56,12 @@ public class UserController  implements UserManagementApi{
 
     @Override
     public ResponseEntity<LoginResponse> logUser(@Valid LogUserRequest logUserRequest) {
-        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(logUserRequest.getEmail(), logUserRequest.getPassword()));
+        Authentication authentication;
+        try {
+            authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(logUserRequest.getEmail(), logUserRequest.getPassword()));
+        } catch (BadCredentialsException e){
+            throw new EntityNotFound("No user found with the credentials provided");
+        }
         com.uade.screenspace.entity.User user = ((com.uade.screenspace.entity.User) authentication.getPrincipal());
 
         RefreshToken token = authService.getToken(user);
@@ -86,8 +82,21 @@ public class UserController  implements UserManagementApi{
     }
 
     @Override
-    public ResponseEntity<Void> resetUserPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
-        return null;
+    public ResponseEntity<Void> resetUserPassword(@Valid ResetUserPasswordRequest resetUserPasswordRequest) {
+        service.confirmPasswordReset(resetUserPasswordRequest.getEmail(), resetUserPasswordRequest.getToken());
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    public ResponseEntity<Void> forgotPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
+        service.passwordReset(forgotPasswordRequest.getEmail());
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    public ResponseEntity<Void> confirmPasswordReset(@Valid ConfirmPasswordResetRequest confirmPasswordResetRequest) {
+        service.updatePassword(confirmPasswordResetRequest.getEmail(), confirmPasswordResetRequest.getPassword(), confirmPasswordResetRequest.getCode());
+        return ResponseEntity.ok(null);
     }
 
     @Override

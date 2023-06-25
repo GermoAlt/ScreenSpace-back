@@ -5,6 +5,7 @@ import com.uade.screenspace.entity.PendingUser;
 import com.uade.screenspace.entity.User;
 import com.uade.screenspace.exceptions.DuplicatedEntity;
 import com.uade.screenspace.exceptions.EntityNotFound;
+import com.uade.screenspace.exceptions.ValidationError;
 import com.uade.screenspace.repository.PendingUserRepository;
 import com.uade.screenspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class UserService implements IUserService{
         try{
             emailSender.sendRegistrationCode(email, generatedCode);
         } catch (Exception e){
-
+            throw new ValidationError("Error while sending email, please try again");
         }
 
         return pendingUserRepository.save(pendingUser);
@@ -100,21 +101,33 @@ public class UserService implements IUserService{
         try{
             emailSender.sendPasswordResetCode(email, generatedCode);
         } catch (Exception e){
-
+            throw new ValidationError("Error while sending email, please try again");
         }
 
     }
 
     @Override
-    public boolean confirmPasswordReset(String email, String code) {
+    public void confirmPasswordReset(String email, String code) {
         var requestedUser = userRepository.findByEmail(email);
         if (requestedUser.isEmpty()){
             throw new RuntimeException();
         }
 
-        return requestedUser.get().getCodes()
+        requestedUser.get().getCodes()
                 .stream()
-                .anyMatch(c -> c.getCode().equals(code) && c.getExpirationDate().isAfter(Instant.now()));
+                .filter(c -> c.getCode().equals(code) && c.getExpirationDate().isAfter(Instant.now()))
+                .findAny().orElseThrow(() -> new EntityNotFound(String.format("Code not found for email %s", email)));
+    }
+
+    @Override
+    public void updatePassword(String email, String password,  String code) {
+        var requestedUser = userRepository.findByEmail(email);
+        if (requestedUser.isEmpty()){
+            throw new RuntimeException();
+        }
+        requestedUser.get().setPassword(password);
+        requestedUser.get().getCodes().removeIf(c -> c.getCode().equals(code));
+        userRepository.save(requestedUser.get());
     }
 
     private String getCode() {
