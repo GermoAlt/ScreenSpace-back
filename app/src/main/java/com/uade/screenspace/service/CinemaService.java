@@ -5,6 +5,7 @@ import com.uade.screenspace.entity.Cinema;
 import com.uade.screenspace.exceptions.DuplicatedEntity;
 import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.mapper.CinemaMapper;
+import com.uade.screenspace.mapper.TheaterMapper;
 import com.uade.screenspace.repository.CinemaRepository;
 import io.screenspace.model.CreateCinemaRequest;
 import io.screenspace.model.UpdateCinemaRequest;
@@ -48,18 +49,17 @@ public class CinemaService implements ICinemaService{
 
     @Override
     public Cinema updateCinemaById(String cinemaId, UpdateCinemaRequest cinemaRequest) {
-        Cinema cinema = cinemaRepository.findById(cinemaId)
-                .orElseThrow(() -> new EntityNotFound("Cinema not found"));
-        CinemaMapper.INSTANCE.mapCreateCinemaToUpdateCinema(cinemaRequest);
-        return cinemaRepository.save(cinema);
+        cinemaRepository.findById(cinemaId)
+                .orElseThrow(() -> new EntityNotFound(String.format("Cinema %s not found", cinemaId)));
+        Cinema cinemaUpdated = CinemaMapper.INSTANCE.mapCreateCinemaToUpdateCinema(cinemaRequest);
+        return cinemaRepository.save(cinemaUpdated);
     }
 
     @Override
-    public boolean deleteCinemaById(String cinemaId) {
+    public void deleteCinemaById(String cinemaId) {
         if (!cinemaRepository.existsById(cinemaId)) {
             throw new EntityNotFound("Cinema not found");
         }
         cinemaRepository.deleteById(cinemaId);
-        return false;
     }
 }

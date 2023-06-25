@@ -16,17 +16,11 @@ public interface CinemaMapper {
     @Mapping(source = "name" , target = "name")
     @Mapping(source = "address", target = "address")
     @Mapping(source = "geolocation", target = "geoLocation")
-    @Mapping(source = "screeningsByDay", target = "screeningsByDay")
-    @Mapping(source = "pricePerFunction", target = "pricePerFunction")
-    @Mapping(source = "screeningsByDay", target = "screeningsByDay")
     Cinema mapToCinema(io.screenspace.model.Cinema cinemaModel);
 
     @Mapping(source = "name" , target = "name")
     @Mapping(source = "address", target = "address")
     @Mapping(source = "geoLocation", target = "geolocation")
-    @Mapping(source = "screeningsByDay", target = "screeningsByDay")
-    @Mapping(source = "pricePerFunction", target = "pricePerFunction")
-    @Mapping(source = "screeningsByDay", target = "screeningsByDay")
     io.screenspace.model.Cinema mapToCinemaModel(Cinema cinema);
 
     Cinema mapCreateCinemaRequestToCinema (CreateCinemaRequest createCinemaRequest, Object user);

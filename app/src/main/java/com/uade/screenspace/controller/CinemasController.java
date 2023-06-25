@@ -1,8 +1,8 @@
 package com.uade.screenspace.controller;
 
 
+import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.mapper.CinemaMapper;
-import com.uade.screenspace.mapper.CinemaMapperImpl;
 import com.uade.screenspace.service.CinemaService;
 import io.screenspace.api.CinemasApi;
 import io.screenspace.model.Cinema;
@@ -55,10 +55,10 @@ public class CinemasController implements CinemasApi {
     }
 
     public ResponseEntity<Void> deleteCinemaById (String cinemaId) {
-        boolean deleted = cinemaService.deleteCinemaById(cinemaId);
-        if (deleted) {
+        try {
+            cinemaService.deleteCinemaById(cinemaId);
             return ResponseEntity.ok().build();
-        } else {
+        } catch (EntityNotFound e) {
             return ResponseEntity.notFound().build();
         }
     }
