@@ -3,6 +3,7 @@ package com.uade.screenspace.service;
 import com.uade.screenspace.entity.Theater;
 import com.uade.screenspace.entity.User;
 import com.uade.screenspace.exceptions.EntityNotFound;
+import com.uade.screenspace.exceptions.ValidationError;
 import com.uade.screenspace.mapper.TheaterMapper;
 import com.uade.screenspace.repository.CinemaRepository;
 import com.uade.screenspace.repository.TheaterRepository;
@@ -21,6 +22,14 @@ public class TheaterService implements ITheaterService {
 
     @Override
     public Theater createTheater(io.screenspace.model.Theater theater, String cinemaId, User loggedUser) {
+
+        if (theater.getPricePerFunction() < 0){
+            throw new ValidationError("Price per function must be positive");
+        }
+        if (theater.getSeatsLayout().getNumColumns() < 0 || theater.getSeatsLayout().getNumRows() < 0){
+            throw new ValidationError("Seats layout must be positive");
+        }
+
         var cinema = cinemaRepository.findByIdAndOwner(cinemaId, loggedUser).orElseThrow(() -> new EntityNotFound(String.format("Cinema with id %s does not exists", cinemaId)));
 
         var theaterEntity = TheaterMapper.modelToEntity(theater);
@@ -60,6 +69,12 @@ public class TheaterService implements ITheaterService {
 
     @Override
     public Theater updateTheater(io.screenspace.model.Theater theater, String theaterId, User loggedUser) {
+        if (theater.getPricePerFunction() < 0){
+            throw new ValidationError("Price per function must be positive");
+        }
+        if (theater.getSeatsLayout().getNumColumns() < 0 || theater.getSeatsLayout().getNumRows() < 0){
+            throw new ValidationError("Seats layout must be positive");
+        }
         if(theaterRepository.findByIdAndUser(theaterId, loggedUser).isEmpty()){
             throw new EntityNotFound(String.format("Theater with id %s does not exists", theaterId));
         }

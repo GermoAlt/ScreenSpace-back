@@ -23,12 +23,8 @@ public class TheaterController implements TheatersApi {
 
     @Override
     public ResponseEntity<Theater> createTheater(String cinemaId, @Valid Theater theater) {
-        try{
-            var createdTheater = service.createTheater(theater, cinemaId, getJWTUser());
-            return ResponseEntity.ok(TheaterMapper.entityToModel(createdTheater));
-        } catch (Exception e){
-            return ResponseEntity.internalServerError().build();
-        }
+        var createdTheater = service.createTheater(theater, cinemaId, getJWTUser());
+        return ResponseEntity.ok(TheaterMapper.entityToModel(createdTheater));
     }
 
     @Override
