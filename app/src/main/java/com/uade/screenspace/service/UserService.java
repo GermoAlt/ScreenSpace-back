@@ -104,6 +104,7 @@ public class UserService implements IUserService{
             throw new ValidationError("Error while sending email, please try again");
         }
 
+        userRepository.save(requestedUser.get());
     }
 
     @Override
