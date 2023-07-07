@@ -3,10 +3,13 @@ package com.uade.screenspace.controller;
 
 import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.mapper.CinemaMapper;
+import com.uade.screenspace.mapper.ScreeningMapper;
 import com.uade.screenspace.service.CinemaService;
+import com.uade.screenspace.service.ScreeningService;
 import io.screenspace.api.CinemasApi;
 import io.screenspace.model.Cinema;
 import io.screenspace.model.CreateCinemaRequest;
+import io.screenspace.model.Screening;
 import io.screenspace.model.UpdateCinemaRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,8 @@ public class CinemasController implements CinemasApi {
 
     @Autowired
     CinemaService cinemaService;
+    @Autowired
+    ScreeningService screeningService;
 
     public ResponseEntity<List<Cinema>> getCinemas() {
         return ResponseEntity.ok(cinemaService.getCinemas().stream().map(CinemaMapper.INSTANCE::mapToCinemaModel).collect(Collectors.toList()));
@@ -61,5 +66,14 @@ public class CinemasController implements CinemasApi {
         } catch (EntityNotFound e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @Override
+    public ResponseEntity<List<Screening>> getScreeningsForCinema(String cinemaId) {
+        return ResponseEntity.ok(
+                screeningService.screeningsForCinema(cinemaId)
+                        .stream()
+                        .map(ScreeningMapper::entityToModel).collect(Collectors.toList())
+        );
     }
 }

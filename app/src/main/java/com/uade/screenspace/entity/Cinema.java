@@ -101,4 +101,8 @@ public class Cinema {
     public boolean isSameOwner(User user){
         return this.owner.getId().equals(user.getId());
     }
+
+    public double calculateDistanceToCinema(double x1, double y1) {
+        return org.apache.lucene.util.SloppyMath.haversinMeters(x1, y1, geolocation.getLatitude(), geolocation.getLongitude()) / 1000;
+    }
 }

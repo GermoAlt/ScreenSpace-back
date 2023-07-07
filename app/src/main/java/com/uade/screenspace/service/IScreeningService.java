@@ -22,4 +22,6 @@ public interface IScreeningService {
     List<TimeSlot> searchAvailabilityForScreening(String theater, String movieTitle, String date);
 
     Screening updateScreening(String screeningId, UpdateScreeningRequest updateScreeningRequest);
+
+    List<Screening> screeningsForCinema(String cinemaId);
 }

@@ -2,6 +2,7 @@ package com.uade.screenspace.service;
 
 import com.uade.screenspace.auth.LoggedUserGetter;
 import com.uade.screenspace.entity.Movie;
+import com.uade.screenspace.entity.Rating;
 import com.uade.screenspace.entity.Screening;
 import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.exceptions.ValidationError;
@@ -19,16 +20,20 @@ import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 @Service
 public class ScreeningService implements IScreeningService {
 
     public static String START_HOUR = "08:00:00";
     public static String END_HOUR = "20:00:00";
+    public static double MAX_DISTANCE = 5;
 
     @Autowired
     private ScreeningRepository screeningRepository;
@@ -70,13 +75,27 @@ public class ScreeningService implements IScreeningService {
     }
 
     @Override
-    public List<Screening> searchScreenings(String cinema, String movieTitle, String genre, String score, String latitute, String longitude) {
+    public List<Screening> searchScreenings(String cinema, String movieTitle, String genre, String score, String latitude, String longitude) {
         var screenings = screeningRepository.findAll();
+        screenings = screenings.stream().filter(s -> s.getDate().isAfter(DateTime.now())).collect(Collectors.toList());
         if (cinema != null){
             screenings = screenings.stream().filter(s -> s.getTheater().getCinema().getId().equals(cinema)).collect(Collectors.toList());
         }
         if (movieTitle != null){
             screenings = screenings.stream().filter(s -> s.getMovie().getTitle().contains(movieTitle)).collect(Collectors.toList());
+        }
+        if (genre != null){
+            screenings = screenings.stream().filter(s -> s.getMovie().getGenre().contains(genre)).collect(Collectors.toList());
+        }
+        if (score != null){
+            screenings = screenings.stream().filter(s -> s.getMovie().getRating() >= Double.parseDouble(score)).collect(Collectors.toList());
+        }
+        if (latitude != null && longitude != null){
+            screenings = screenings.stream()
+                    .filter(s ->
+                            s.getTheater().getCinema().calculateDistanceToCinema(Double.parseDouble(latitude), Double.parseDouble(longitude)) <= MAX_DISTANCE
+                    )
+                    .collect(Collectors.toList());
         }
         return screenings;
     }
@@ -123,6 +142,11 @@ public class ScreeningService implements IScreeningService {
         return screeningRepository.save(existentScreening);
     }
 
+    @Override
+    public List<Screening> screeningsForCinema(String cinemaId) {
+        return searchScreenings(cinemaId, null, null, null, null, null);
+    }
+
     private List<Screening> findScreeningsForTheaterAndDate(String theater, String date){
         DateTime searchedDate = DateTime.parse(date, DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss")).withTimeAtStartOfDay();
         return screeningRepository.findAll()
@@ -147,5 +171,9 @@ public class ScreeningService implements IScreeningService {
 
     private boolean isOverlapping(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
         return !start1.isAfter(end2) && !start2.isAfter(end1);
+    }
+
+    public double calculateDistanceBetweenPointsWithPoint2D(double x1, double y1, double x2, double y2) {
+        return org.apache.lucene.util.SloppyMath.haversinMeters(x1, y1, x2, y2) / 1000;
     }
 }
