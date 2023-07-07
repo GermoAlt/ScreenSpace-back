@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class MovieService implements IMovieService{
@@ -25,5 +27,10 @@ public class MovieService implements IMovieService{
     @Override
     public Movie getMovieById(String id) {
         return movieRepository.findById(id).orElseThrow(() -> new EntityNotFound(String.format("Movie with id %s does not exists", id)));
+    }
+
+    @Override
+    public List<String> getMovieGenres() {
+        return movieRepository.findAll().stream().map(Movie::getGenre).flatMap(List::stream).distinct().collect(Collectors.toList());
     }
 }

@@ -8,4 +8,6 @@ public interface IMovieService {
     List<Movie> getMoviesByTitle(String title);
 
     Movie getMovieById(String id);
+
+    List<String> getMovieGenres();
 }

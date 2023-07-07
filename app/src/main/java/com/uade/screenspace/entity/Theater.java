@@ -4,6 +4,8 @@ import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Objects;
+
 @Document("theaters")
 public class Theater {
 
@@ -82,5 +84,18 @@ public class Theater {
 
     public void setCinema(Cinema cinema) {
         this.cinema = cinema;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Theater theater = (Theater) o;
+        return id.equals(theater.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
