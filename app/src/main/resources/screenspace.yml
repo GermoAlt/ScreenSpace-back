@@ -1434,16 +1434,13 @@ components:
     Reservation:
       type: object
       required:
-        - cinema
         - screening
         - seatsReserved
         - user
       properties:
         code:
-          type: number
+          type: string
           description: reservation code
-        cinema:
-          $ref: '#/components/schemas/Cinema'
         screening:
           $ref: '#/components/schemas/Screening'
         user:
@@ -1552,14 +1549,13 @@ components:
     CreateReservationRequest:
       type: object
       properties:
-        cinemaId:
-          type: string
-          description: Id of cinema
         screeningId:
           type: string
           description: Id of screening
         seatsReserved:
-          $ref: '#/components/schemas/SeatReserved'
+          type: array
+          items:
+            $ref: '#/components/schemas/SeatReserved'
     CreateScreeningRequest:
       type: object
       properties:
