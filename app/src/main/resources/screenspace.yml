@@ -276,6 +276,57 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - User Management
+  /v1/auths/oauth:
+    post:
+      summary: Log in an existing user using oauth
+      operationId: logUserWithOauth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable, offline error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - User Management
   /v1/forgot-password:
     post:
       summary: Forgot user password
@@ -1328,7 +1379,7 @@ components:
         movie:
           $ref: '#/components/schemas/Movie'
         seatsReserved:
-          type: object
+          type: array
           items:
             $ref: '#/components/schemas/SeatReserved'
         date:

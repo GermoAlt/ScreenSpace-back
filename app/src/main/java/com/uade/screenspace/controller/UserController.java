@@ -64,7 +64,24 @@ public class UserController  implements UserManagementApi{
         }
         com.uade.screenspace.entity.User user = ((com.uade.screenspace.entity.User) authentication.getPrincipal());
 
-        RefreshToken token = authService.getToken(user);
+        RefreshToken token = authService.getToken(user, true);
+
+        LoginResponse response = new LoginResponse().token(token.getJwt()).refreshToken(token.getRefreshToken());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<LoginResponse> logUserWithOauth(@Valid LogUserRequest logUserRequest) {
+        Authentication authentication;
+        try {
+            authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(logUserRequest.getEmail(), logUserRequest.getPassword()));
+        } catch (BadCredentialsException e){
+            throw new EntityNotFound("No user found with the credentials provided");
+        }
+        com.uade.screenspace.entity.User user = ((com.uade.screenspace.entity.User) authentication.getPrincipal());
+
+        RefreshToken token = authService.getToken(user, false);
 
         LoginResponse response = new LoginResponse().token(token.getJwt()).refreshToken(token.getRefreshToken());
 

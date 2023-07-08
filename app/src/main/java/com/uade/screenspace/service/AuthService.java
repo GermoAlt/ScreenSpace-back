@@ -17,8 +17,8 @@ public class AuthService implements IAuthService {
     RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public RefreshToken getToken(User user) {
-        String token = jwtTokenUtil.generateAccessToken(user);
+    public RefreshToken getToken(User user, boolean isOwner) {
+        String token = jwtTokenUtil.generateAccessToken(user, isOwner);
         RefreshToken refreshToken = createRefreshToken(user);
         refreshToken.setJwt(token);
 

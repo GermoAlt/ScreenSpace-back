@@ -28,6 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private static HashSet<String> allowedURLs = new HashSet<>(
             List.of(
                     "/v1/auths-POST",
+                    "/v1/auths/oauth-POST",
                     "/v1/auths-PUT",
                     "/v1/users-POST",
                     "/v1/reset-password-POST",

@@ -2,6 +2,7 @@ package com.uade.screenspace.service;
 
 import com.uade.screenspace.auth.LoggedUserGetter;
 import com.uade.screenspace.entity.Cinema;
+import com.uade.screenspace.entity.User;
 import com.uade.screenspace.exceptions.DuplicatedEntity;
 import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.mapper.CinemaMapper;
@@ -28,7 +29,12 @@ public class CinemaService implements ICinemaService{
 
     @Override
     public List<Cinema> getCinemas() {
-        return cinemaRepository.findByOwner(userGetter.get());
+        User user = userGetter.get();
+        if (user.getOwner()){
+            return cinemaRepository.findByOwner(userGetter.get());
+        } else {
+            return cinemaRepository.findAll();
+        }
     }
 
     @Override

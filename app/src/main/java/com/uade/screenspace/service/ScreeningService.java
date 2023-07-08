@@ -69,7 +69,7 @@ public class ScreeningService implements IScreeningService {
     @Override
     public Screening getScreeningByID(String screeningId) {
         var foundScreening = screeningRepository.findById(screeningId).orElseThrow(() -> new EntityNotFound(String.format("No screening found with id %s", screeningId)));
-        if (!foundScreening.getTheater().getUser().getId().equals(userGetter.get().getId()))
+        if (userGetter.get().getOwner() && !foundScreening.getTheater().getUser().getId().equals(userGetter.get().getId()))
             throw new EntityNotFound(String.format("No screening found with id %s", screeningId));
         return foundScreening;
     }

@@ -57,7 +57,11 @@ public class TheaterService implements ITheaterService {
 
     @Override
     public Theater findTheater(String theaterId, User loggedUser) {
-        return theaterRepository.findByIdAndUser(theaterId, loggedUser).orElseThrow(() -> new EntityNotFound(String.format("Theater with id %s does not exists", theaterId)));
+        if (loggedUser.getOwner()){
+            return theaterRepository.findByIdAndUser(theaterId, loggedUser).orElseThrow(() -> new EntityNotFound(String.format("Theater with id %s does not exists", theaterId)));
+        } else {
+            return theaterRepository.findById(theaterId).orElseThrow(() -> new EntityNotFound(String.format("Theater with id %s does not exists", theaterId)));
+        }
     }
 
     @Override
