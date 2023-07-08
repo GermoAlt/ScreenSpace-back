@@ -17,7 +17,7 @@ import java.io.IOException;
 @Service
 public class EmailSender implements IEmailSender {
 
-    private String API_KEY = "SG.JrQ3MxCWSOOixCj6qyclLg.X5gJ2JjLDXPjpGWiPGqdCrCiTOjrPT7uRQ8wjaVxa2g";//System.getenv("app.sendgrid.key");
+    private String API_KEY = System.getenv("app.sendgrid.key");//;
 
     @Value("${app.sendgrid.from}")
     private String FROM_EMAIL;
