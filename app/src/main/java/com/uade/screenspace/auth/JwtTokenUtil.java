@@ -34,16 +34,16 @@ public class JwtTokenUtil implements Serializable {
     public static String IS_OWNER_CLAIM = "IS_OWNER_CLAIM";
     public static String EMAIL_CLAIM = "EMAIL_CLAIM";
 
-    public String generateAccessToken(User user) {
+    public String generateAccessToken(User user, boolean isOwner) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(IS_OWNER_CLAIM, user.getOwner());
+        claims.put(IS_OWNER_CLAIM, isOwner);
         claims.put(EMAIL_CLAIM, user.getEmail());
 
         return Jwts.builder()
                 .setIssuer("ScreenSpace")
                 .setIssuedAt(new Date())
                 .setClaims(claims)
-                .setSubject(String.format("%s,%s,%s", user.getId(), user.getEmail(), user.getOwner()))
+                .setSubject(String.format("%s,%s,%s", user.getId(), user.getEmail(), isOwner))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();

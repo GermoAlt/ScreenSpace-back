@@ -5,7 +5,7 @@ import com.uade.screenspace.entity.User;
 
 public interface IAuthService {
 
-    RefreshToken getToken(User user);
+    RefreshToken getToken(User user, boolean isOwner);
 
     RefreshToken createRefreshToken(User user);
 

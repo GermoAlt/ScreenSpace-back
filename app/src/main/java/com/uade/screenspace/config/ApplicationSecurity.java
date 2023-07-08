@@ -40,7 +40,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
          http.authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/v1/auths","/v1/users","/v1/reset-password","/v1/reset-password/confirm","/v1/users/confirm-registration","/v1/forgot-password")
+                    .antMatchers(HttpMethod.POST, "/v1/auths","/v1/auths/oauth","/v1/users","/v1/reset-password","/v1/reset-password/confirm","/v1/users/confirm-registration","/v1/forgot-password")
                     .permitAll()
                     .antMatchers("/actuator/**").permitAll()
                     .anyRequest().authenticated()
