@@ -59,4 +59,8 @@ public class Address {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    public String getTextAddress(){
+        return street + " " + number + "," + city;
+    }
 }

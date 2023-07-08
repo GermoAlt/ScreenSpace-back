@@ -28,8 +28,8 @@ public class ScreeningMapper {
                         .stream()
                         .map(s ->
                                 new SeatReserved()
-                                        .seatColumn(Integer.toString(s.getSeatColumn()))
-                                        .seatRow(Integer.toString(s.getSeatRow())))
+                                        .seatColumn(s.getSeatColumn())
+                                        .seatRow(s.getSeatRow()))
                         .collect(Collectors.toList()));
     }
 }

@@ -1,22 +1,22 @@
 package com.uade.screenspace.entity;
 
 public class SeatReserved {
-    private int seatRow;
-    private int seatColumn;
+    private String seatRow;
+    private String seatColumn;
 
-    public int getSeatRow() {
+    public String getSeatRow() {
         return seatRow;
     }
 
-    public void setSeatRow(int seatRow) {
+    public void setSeatRow(String seatRow) {
         this.seatRow = seatRow;
     }
 
-    public int getSeatColumn() {
+    public String getSeatColumn() {
         return seatColumn;
     }
 
-    public void setSeatColumn(int seatColumn) {
+    public void setSeatColumn(String seatColumn) {
         this.seatColumn = seatColumn;
     }
 }
