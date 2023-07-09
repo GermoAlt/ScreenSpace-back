@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ScreeningMapper {
 
-    private static DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+    private static DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
 
     public Movie modelToEntity(io.screenspace.model.Movie model){
         Movie modelMovie = new Movie();

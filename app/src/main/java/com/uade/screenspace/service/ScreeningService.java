@@ -2,11 +2,9 @@ package com.uade.screenspace.service;
 
 import com.uade.screenspace.auth.LoggedUserGetter;
 import com.uade.screenspace.entity.Movie;
-import com.uade.screenspace.entity.Rating;
 import com.uade.screenspace.entity.Screening;
 import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.exceptions.ValidationError;
-import com.uade.screenspace.repository.CinemaRepository;
 import com.uade.screenspace.repository.MovieRepository;
 import com.uade.screenspace.repository.ScreeningRepository;
 import com.uade.screenspace.repository.TheaterRepository;
@@ -20,20 +18,16 @@ import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
 
 @Service
 public class ScreeningService implements IScreeningService {
 
     public static String START_HOUR = "08:00:00";
     public static String END_HOUR = "20:00:00";
-    public static double MAX_DISTANCE = 5;
 
     @Autowired
     private ScreeningRepository screeningRepository;
@@ -75,7 +69,7 @@ public class ScreeningService implements IScreeningService {
     }
 
     @Override
-    public List<Screening> searchScreenings(String cinema, String movieTitle, String genre, String score, String latitude, String longitude) {
+    public List<Screening> searchScreenings(String cinema, String movieTitle, String genre, String score, String latitude, String longitude, Double maxDistance) {
         var screenings = screeningRepository.findAll();
         screenings = screenings.stream().filter(s -> s.getDate().isAfter(DateTime.now())).collect(Collectors.toList());
         if (cinema != null){
@@ -90,10 +84,10 @@ public class ScreeningService implements IScreeningService {
         if (score != null){
             screenings = screenings.stream().filter(s -> s.getMovie().getRating() >= Double.parseDouble(score)).collect(Collectors.toList());
         }
-        if (latitude != null && longitude != null){
+        if (latitude != null && longitude != null && maxDistance != null){
             screenings = screenings.stream()
                     .filter(s ->
-                            s.getTheater().getCinema().calculateDistanceToCinema(Double.parseDouble(latitude), Double.parseDouble(longitude)) <= MAX_DISTANCE
+                            s.getTheater().getCinema().calculateDistanceToCinema(Double.parseDouble(latitude), Double.parseDouble(longitude)) <= maxDistance
                     )
                     .collect(Collectors.toList());
         }
@@ -144,7 +138,7 @@ public class ScreeningService implements IScreeningService {
 
     @Override
     public List<Screening> screeningsForCinema(String cinemaId) {
-        return searchScreenings(cinemaId, null, null, null, null, null);
+        return searchScreenings(cinemaId, null, null, null, null, null, null);
     }
 
     private List<Screening> findScreeningsForTheaterAndDate(String theater, String date){

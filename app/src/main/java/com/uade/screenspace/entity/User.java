@@ -20,6 +20,7 @@ public class User implements UserDetails{
     private Boolean isOwner;
     private String profilePicBase64;
     private List<Code> codes;
+    private String name;
 
     public User(String email, String password, Boolean isOwner, String profilePicBase64) {
         this.email = email;
@@ -88,7 +89,7 @@ public class User implements UserDetails{
 
     @Override
     public String getUsername() {
-        return String.join("-", this.email, this.isOwner.toString());
+        return this.name == null ? this.email : this.name;
     }
 
     @Override
@@ -109,5 +110,13 @@ public class User implements UserDetails{
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
