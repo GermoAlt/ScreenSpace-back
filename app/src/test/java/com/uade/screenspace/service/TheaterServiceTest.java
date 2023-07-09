@@ -64,6 +64,7 @@ class TheaterServiceTest {
 
     @Test
     void deleteTheater() {
+
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.uade.screenspace.service;
 
+import com.uade.screenspace.auth.LoggedUserGetter;
 import com.uade.screenspace.entity.Code;
 import com.uade.screenspace.entity.PendingUser;
 import com.uade.screenspace.entity.User;
@@ -27,6 +28,8 @@ public class UserService implements IUserService{
     private PendingUserRepository pendingUserRepository;
     @Autowired
     private IEmailSender emailSender;
+    @Autowired
+    private LoggedUserGetter userGetter;
 
     public PendingUser createPendingUser(String email, String password, boolean isOwner){
         String generatedCode;
@@ -78,8 +81,12 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public User updateUser(String email, String password, boolean isOwner, String profilePic) {
-        return null;
+    public User updateUser(String email, boolean isOwner, String profilePic, String name) {
+        var user = userRepository.findByEmailAndIsOwner(email, userGetter.get().getOwner()).get();
+        user.setEmail(email);
+        user.setProfilePicBase64(profilePic);
+        user.setName(name);
+        return userRepository.save(user);
     }
 
     @Override

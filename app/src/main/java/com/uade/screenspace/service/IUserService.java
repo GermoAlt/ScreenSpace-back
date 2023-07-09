@@ -14,7 +14,7 @@ public interface IUserService {
 
     void deleteUser(User user);
 
-    User updateUser(String email, String password, boolean isOwner, String profilePic);
+    User updateUser(String email, boolean isOwner, String profilePic, String name);
 
     void passwordReset(String email);
 

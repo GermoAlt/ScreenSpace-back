@@ -1045,6 +1045,11 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: maxDistance
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: List of found movies on screening per cinema

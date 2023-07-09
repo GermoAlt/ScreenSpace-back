@@ -1,5 +1,6 @@
 package com.uade.screenspace.service;
 
+import com.uade.screenspace.auth.LoggedUserGetter;
 import com.uade.screenspace.entity.Code;
 import com.uade.screenspace.entity.PendingUser;
 import com.uade.screenspace.entity.User;
@@ -24,6 +25,8 @@ class UserServiceTest {
     @Autowired
     IUserService service;
 
+    @MockBean
+    LoggedUserGetter userGetter;
     @MockBean
     UserRepository repository;
     @MockBean
