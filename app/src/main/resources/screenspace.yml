@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: ScreenSpace API
-  version: 1.0.6-oas3
+  version: 1.0.7
   description: API for ScreenSpace cinema application
 servers:
   - url: https://screenspace.com/api/v1/
@@ -1147,26 +1147,26 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - Reservations
-  /v1/{movieId}/qualifications:
+  /v1/{movieId}/reviews:
     parameters:
       - name: movieId
         in: path
         required: true
         description: ID of cinema
         schema:
-          type: integer
+          type: string
     get:
-      summary: Get qualifications for a movie
-      operationId: getQualificationsByMovie
+      summary: Get reviews for a movie
+      operationId: getReviewsByMovie
       responses:
         '200':
-          description: List of qualifications
+          description: List of reviews
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Qualification'
+                  $ref: '#/components/schemas/Review'
         '401':
           description: Unauthorized access
           content:
@@ -1174,19 +1174,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Qualifications
+        - Reviews
     post:
-      summary: Adds a new qualification
-      operationId: createQualification
+      summary: Adds a new review
+      operationId: createReview
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Qualification'
+              $ref: '#/components/schemas/CreateReviewRequest'
       responses:
         '200':
-          description: Qualification added successfully
+          description: Review added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviewId:
+                    type: string
         '401':
           description: Unauthorized access
           content:
@@ -1194,7 +1201,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Qualifications
+        - Reviews
   /v1/health:
     get:
       summary: Check the health of the server
@@ -1242,11 +1249,8 @@ components:
     Rating:
       type: object
       required:
-        - comment
         - rating
       properties:
-        comment:
-          $ref: '#/components/schemas/Comment'
         rating:
           type: number
           format: double
@@ -1521,9 +1525,15 @@ components:
         details:
           type: object
           description: Additional details about the server's status
-    Qualification:
+    Review:
       type: object
       properties:
+        id:
+          type: string
+          description: Review id
+        movieId:
+          type: string
+          description: Id of movie
         rating:
           $ref: '#/components/schemas/Rating'
         comment:
@@ -1546,6 +1556,16 @@ components:
         refreshToken:
           type: string
           description: refresh token
+    CreateReviewRequest:
+      type: object
+      properties:
+        movieId:
+          type: string
+          description: Id of movie
+        rating:
+          $ref: '#/components/schemas/Rating'
+        comment:
+          $ref: '#/components/schemas/Comment'
     CreateReservationRequest:
       type: object
       properties:

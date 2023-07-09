@@ -56,7 +56,7 @@ spring.data.mongodb.database=${MONGO_DATABASE}
 <table>
   <tr>
     <td align="center"><sub><b>German Altairac</b></sub><br /><sub>1084200</sub><br/><a>💻</a></td>
-    <td align="center"><sub><b>Martin</b></sub><br /><sub></sub><br/><a>💻</a></td>
+    <td align="center"><sub><b>Nicolas Martin Cano</b></sub><br /><sub></sub><br/><a>💻</a></td>
     <td align="center"><sub><b>Fernando Ferreyra</b></sub><br /><sub></sub><br/><a>💻</a></td>
     <td align="center"><sub><b>Belen Enriquez</b></sub><br /><sub>1092598</sub><br/><a>💻</a></td>
   </tr>
