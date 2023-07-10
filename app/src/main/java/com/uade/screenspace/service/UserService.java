@@ -146,7 +146,7 @@ public class UserService implements IUserService{
         User newOauthUser = new User();
         newOauthUser.setEmail(email);
         newOauthUser.setOwner(false);
-        newOauthUser.setPassword("fakePassword");
+        newOauthUser.setPassword(null);
         return userRepository.save(newOauthUser);
     }
 
