@@ -1425,6 +1425,14 @@ components:
         duration:
           type: string
           description: Duration of the movie, measured in minutes
+        actors:
+          type: array
+          items:
+            type: string
+          description: The actors of the movie.
+        director:
+          type: string
+          description: Director of the movie
     SeatReserved:
       type: object
       required:

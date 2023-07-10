@@ -18,9 +18,12 @@ public class Movie {
     private int duration;
     private String base64Image;
     private List<Rating> ratings;
+    private List<String> actors;
+    private String director;
 
     public Movie() {
         genre = new ArrayList<>();
+        ratings = new ArrayList<>();
     }
 
     public String getId() {
@@ -81,6 +84,26 @@ public class Movie {
 
     public double getRating(){
         return getRatings().stream().mapToDouble(Rating::getRating).average().orElse(5);
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public List<String> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<String> actors) {
+        this.actors = actors;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
     }
 
     @Override

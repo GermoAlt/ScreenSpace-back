@@ -14,10 +14,12 @@ public class MovieMapper {
         return new io.screenspace.model.Movie()
                 .duration(entityMovie.getDuration().toString())
                 .image(entityMovie.getBase64Image())
-                .rating(5D)
+                .rating(entityMovie.getRating())
                 .synopsis(entityMovie.getSynopsis())
                 .title(entityMovie.getTitle())
                 .genre(entityMovie.getGenre())
+                .actors(entityMovie.getActors())
+                .director(entityMovie.getDirector())
                 .id(entityMovie.getId());
     }
 }

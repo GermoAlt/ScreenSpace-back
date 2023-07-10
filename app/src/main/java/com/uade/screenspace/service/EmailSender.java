@@ -50,7 +50,8 @@ public class EmailSender implements IEmailSender {
         reservation.getSeatsReserved().forEach(s -> {
             builder.append(String.format("Fila %s Butaca %s <br>", s.getSeatRow(), s.getSeatColumn()));
         });
-        builder.append(String.format("Importe entradas : %f", reservation.getScreening().getTheater().getPricePerFunction() * reservation.getSeatsReserved().size()));
+        String importe = String.format("%.2f", reservation.getScreening().getTheater().getPricePerFunction() * reservation.getSeatsReserved().size());
+        builder.append(String.format("Importe entradas : %s", importe));
         Content content = new Content("text/html", builder.toString());
         return sendEmail(subject, content, reservation.getUser().getEmail());
     }
