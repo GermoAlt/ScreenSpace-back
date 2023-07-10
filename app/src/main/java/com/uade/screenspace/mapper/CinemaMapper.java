@@ -6,7 +6,6 @@ import io.screenspace.model.UpdateCinemaRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import org.springframework.stereotype.Component;
 
 @Mapper
 public interface CinemaMapper {
@@ -25,5 +24,5 @@ public interface CinemaMapper {
 
     Cinema mapCreateCinemaRequestToCinema (CreateCinemaRequest createCinemaRequest, Object user);
 
-    Cinema mapCreateCinemaToUpdateCinema (UpdateCinemaRequest updateCinemaRequest);
+    Cinema mapCreateCinemaToUpdateCinema (UpdateCinemaRequest updateCinemaRequest, Cinema cinema);
 }
