@@ -289,11 +289,8 @@ paths:
               properties:
                 email:
                   type: string
-                password:
-                  type: string
               required:
                 - email
-                - password
       responses:
         '200':
           description: User logged in successfully

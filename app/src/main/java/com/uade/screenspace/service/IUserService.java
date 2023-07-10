@@ -3,6 +3,8 @@ package com.uade.screenspace.service;
 import com.uade.screenspace.entity.PendingUser;
 import com.uade.screenspace.entity.User;
 
+import java.util.Optional;
+
 public interface IUserService {
     PendingUser createPendingUser(String email, String password, boolean isOwner);
 
@@ -21,4 +23,6 @@ public interface IUserService {
     void confirmPasswordReset(String email, String code);
 
     void updatePassword(String email, String password, String code);
+
+    User findOrCreateOauthUser(String email);
 }

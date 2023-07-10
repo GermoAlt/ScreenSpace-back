@@ -138,6 +138,18 @@ public class UserService implements IUserService{
         userRepository.save(requestedUser.get());
     }
 
+    @Override
+    public User findOrCreateOauthUser(String email) {
+        var foundUser = userRepository.findByEmailAndIsOwner(email, false);
+        if (foundUser.isPresent())
+            return foundUser.get();
+        User newOauthUser = new User();
+        newOauthUser.setEmail(email);
+        newOauthUser.setOwner(false);
+        newOauthUser.setPassword(null);
+        return userRepository.save(newOauthUser);
+    }
+
     private String getCode() {
         Random rnd = new Random();
         int number = rnd.nextInt(999999);
