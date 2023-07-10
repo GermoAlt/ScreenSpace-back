@@ -48,6 +48,8 @@ public class ReviewService implements IReviewService{
                 .orElseThrow(() -> new EntityNotFound("Movie not found"));
         reviewRequest.setMovieId(movieId);
         Review reviewEntity = reviewMapper.mapCreateReviewRequestToReview(reviewRequest, authentication.getPrincipal());
+        movie.getRatings().add(reviewEntity.getRating());
         reviewRepository.save(reviewEntity);
+        movieRepository.save(movie);
     }
 }
