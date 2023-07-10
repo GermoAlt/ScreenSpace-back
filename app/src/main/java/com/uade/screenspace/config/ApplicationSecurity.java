@@ -26,6 +26,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private UserRepository userRepo;
     @Autowired
     JwtTokenFilter filter;
+    @Autowired
+    CustomAuthenticationProvider customAuthenticationProvider;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -57,11 +59,16 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 );
     }
 
-    @Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);
+
+        return authenticationManagerBuilder.build();
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
