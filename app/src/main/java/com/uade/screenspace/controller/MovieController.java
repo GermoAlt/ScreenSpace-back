@@ -45,13 +45,15 @@ public class MovieController implements MoviesApi {
         var groupedByCinema = screeningService.searchScreenings(cinema, movieTitle, genre, score, latitute, longitude, distance)
                 .stream()
                 .collect(Collectors.groupingBy(c -> c.getTheater().getCinema().getId()));
-        return ResponseEntity.ok(groupedByCinema.entrySet().stream().map(f -> {
+        var response = groupedByCinema.entrySet().stream().map(f -> {
             var c = cinemaService.getCinemaById(f.getKey());
             return new MoviesPerCinema()
-                .cinema(CinemaMapper.INSTANCE.mapToCinemaModel(c))
-                .movies(f.getValue().stream().map(Screening::getMovie).distinct().map(MovieMapper::entityToModel).collect(Collectors.toList()))
-                .distance(latitute != null && longitude != null ? String.format("%.2f", c.calculateDistanceToCinema(Double.parseDouble(latitute), Double.parseDouble(longitude))) : null);
-            }).collect(Collectors.toList()));
+                    .cinema(CinemaMapper.INSTANCE.mapToCinemaModel(c))
+                    .movies(f.getValue().stream().map(Screening::getMovie).distinct().map(MovieMapper::entityToModel).collect(Collectors.toList()))
+                    .distance(latitute != null && longitude != null ? String.format("%.2f", c.calculateDistanceToCinema(Double.parseDouble(latitute), Double.parseDouble(longitude))) : null);
+        }).collect(Collectors.toList());
+        response.forEach(m -> m.setMovies(m.getMovies().stream().distinct().collect(Collectors.toList())));
+        return ResponseEntity.ok(response);
     }
     @Override
     public ResponseEntity<GetGenres200Response> getGenres() {
