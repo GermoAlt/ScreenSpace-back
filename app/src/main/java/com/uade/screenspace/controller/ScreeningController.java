@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +53,7 @@ public class ScreeningController implements ScreeningsApi {
     @Override
     public ResponseEntity<ScreeningsInfo> searchScreenings(@Valid String cinema, @Valid String movieTitle) {
         ScreeningsInfo screeningsInfo = new ScreeningsInfo();
-        var foundScreenings = screeningService.searchScreenings(cinema, movieTitle, null, null, null, null);
+        var foundScreenings = screeningService.searchScreenings(cinema, movieTitle, null, null, null, null, null);
         foundScreenings
                 .stream()
                 .collect(Collectors.groupingBy(s -> s.getDate().toLocalDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))))

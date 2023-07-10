@@ -6,7 +6,6 @@ import io.screenspace.model.TimeSlot;
 import io.screenspace.model.UpdateScreeningRequest;
 
 
-import javax.validation.Valid;
 import java.util.List;
 
 public interface IScreeningService {
@@ -17,7 +16,7 @@ public interface IScreeningService {
 
     Screening getScreeningByID(String screeningId);
 
-    List<Screening> searchScreenings(String cinema, String movieTitle, String genre, String score, String latitute, String longitude);
+    List<Screening> searchScreenings(String cinema, String movieTitle, String genre, String score, String latitute, String longitude, Double maxDistance);
 
     List<TimeSlot> searchAvailabilityForScreening(String theater, String movieTitle, String date);
 
