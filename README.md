@@ -50,7 +50,7 @@ spring.data.mongodb.database=${MONGO_DATABASE}
 
 ## Equipo de trabajo
 * Desarrollo de aplicaciones 1
-* Grupo #
+* Grupo 1
 
 
 <table>
