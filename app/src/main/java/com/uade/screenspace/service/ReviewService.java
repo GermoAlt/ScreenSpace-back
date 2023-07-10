@@ -3,6 +3,7 @@ package com.uade.screenspace.service;
 import com.uade.screenspace.entity.Cinema;
 import com.uade.screenspace.entity.Movie;
 import com.uade.screenspace.entity.Review;
+import com.uade.screenspace.entity.User;
 import com.uade.screenspace.exceptions.EntityNotFound;
 import com.uade.screenspace.mapper.CinemaMapper;
 import com.uade.screenspace.mapper.ReviewMapper;
@@ -11,6 +12,8 @@ import com.uade.screenspace.repository.ReviewRepository;
 import io.screenspace.model.CreateReviewRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,10 +43,11 @@ public class ReviewService implements IReviewService{
 
     @Override
     public void createReview(String movieId, CreateReviewRequest reviewRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new EntityNotFound("Movie not found"));
         reviewRequest.setMovieId(movieId);
-        Review reviewEntity = reviewMapper.mapCreateReviewRequestToReview(reviewRequest);
+        Review reviewEntity = reviewMapper.mapCreateReviewRequestToReview(reviewRequest, authentication.getPrincipal());
         reviewRepository.save(reviewEntity);
     }
 }

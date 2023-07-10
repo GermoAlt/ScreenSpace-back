@@ -1,10 +1,7 @@
 package com.uade.screenspace.mapper;
 
 import com.uade.screenspace.entity.*;
-import io.screenspace.model.CreateCinemaRequest;
 import io.screenspace.model.CreateReviewRequest;
-import io.screenspace.model.GeoLocation;
-import io.screenspace.model.UpdateCinemaRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,10 +23,11 @@ public class ReviewMapperImpl implements ReviewMapper{
     }
 
     @Override
-    public Review mapCreateReviewRequestToReview(CreateReviewRequest createReviewRequest) {
+    public Review mapCreateReviewRequestToReview(CreateReviewRequest createReviewRequest, Object principal) {
         Review review = new Review();
         review.setRating(createReviewRequest.getRating());
         review.setComment(createReviewRequest.getComment());
+        review.getRating().setUser((io.screenspace.model.User) principal);
         return review;
     }
 }

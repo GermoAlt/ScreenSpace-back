@@ -1,7 +1,6 @@
 package com.uade.screenspace.mapper;
 
 import com.uade.screenspace.entity.Review;
-import io.screenspace.model.CreateCinemaRequest;
 import io.screenspace.model.CreateReviewRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -15,5 +14,5 @@ public interface ReviewMapper {
 
     io.screenspace.model.Review mapToReviewModel(Review review);
 
-    Review mapCreateReviewRequestToReview (CreateReviewRequest createReviewRequest);
+    Review mapCreateReviewRequestToReview (CreateReviewRequest createReviewRequest, Object principal);
 }
