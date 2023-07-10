@@ -1,14 +1,21 @@
 package com.uade.screenspace.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.screenspace.model.Comment;
-import io.screenspace.model.Rating;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("review")
 public class Review {
     private Rating rating;
     private Comment comment;
+    private String movieId;
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
+    }
 
     public Rating getRating() {
         return rating;

@@ -10,8 +10,6 @@ public interface ReviewMapper {
 
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
-    Review mapToReview(io.screenspace.model.Review reviewModel);
-
     io.screenspace.model.Review mapToReviewModel(Review review);
 
     Review mapCreateReviewRequestToReview (CreateReviewRequest createReviewRequest, Object principal);
