@@ -1,5 +1,6 @@
 package com.uade.screenspace.service;
 
+import com.uade.screenspace.entity.SeatsLayout;
 import com.uade.screenspace.entity.Theater;
 import com.uade.screenspace.entity.User;
 import com.uade.screenspace.exceptions.EntityNotFound;
@@ -79,9 +80,15 @@ public class TheaterService implements ITheaterService {
         if (theater.getSeatsLayout().getNumColumns() < 0 || theater.getSeatsLayout().getNumRows() < 0){
             throw new ValidationError("Seats layout must be positive");
         }
-        if(theaterRepository.findByIdAndUser(theaterId, loggedUser).isEmpty()){
-            throw new EntityNotFound(String.format("Theater with id %s does not exists", theaterId));
-        }
-        return theaterRepository.save(TheaterMapper.modelToEntity(theater));
+        Theater existingTheater = theaterRepository.findByIdAndUser(theaterId, loggedUser)
+                .orElseThrow(() -> new EntityNotFound(String.format("Theater with id %s does not exist", theaterId)));
+        existingTheater.setName(theater.getName());
+        existingTheater.setPricePerFunction(theater.getPricePerFunction());
+        existingTheater.setTemporarilyClosed(theater.getIsTemporarilyClosed());
+        existingTheater.setSeatsLayout(new SeatsLayout(
+                theater.getSeatsLayout().getNumRows(),
+                theater.getSeatsLayout().getNumColumns()));
+
+        return theaterRepository.save(existingTheater);
     }
 }
