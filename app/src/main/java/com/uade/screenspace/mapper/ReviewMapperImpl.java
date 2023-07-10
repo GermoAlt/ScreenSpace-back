@@ -12,6 +12,8 @@ public class ReviewMapperImpl implements ReviewMapper{
         io.screenspace.model.Review reviewModel = new io.screenspace.model.Review();
         reviewModel.setComment(mapToCommentModel(review.getComment()));
         reviewModel.setRating(mapToRatingModel(review.getRating()));
+        reviewModel.setMovieId(review.getMovieId());
+        reviewModel.setId(review.getId());
         return reviewModel;
     }
 
@@ -32,9 +34,7 @@ public class ReviewMapperImpl implements ReviewMapper{
     }
 
     private Comment mapToComment(io.screenspace.model.Comment commentModel) {
-        Comment comment = new Comment();
-        comment.setComment(comment.getComment());
-        return comment;
+        return new Comment(commentModel.getComment());
     }
 
     private io.screenspace.model.Rating mapToRatingModel(Rating rating) {
