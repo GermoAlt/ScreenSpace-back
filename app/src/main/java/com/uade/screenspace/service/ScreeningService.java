@@ -76,7 +76,7 @@ public class ScreeningService implements IScreeningService {
             screenings = screenings.stream().filter(s -> s.getTheater().getCinema().getId().equals(cinema)).collect(Collectors.toList());
         }
         if (movieTitle != null){
-            screenings = screenings.stream().filter(s -> s.getMovie().getTitle().contains(movieTitle)).collect(Collectors.toList());
+            screenings = screenings.stream().filter(s -> s.getMovie().getTitle().toUpperCase().contains(movieTitle.toUpperCase())).collect(Collectors.toList());
         }
         if (genre != null){
             screenings = screenings.stream().filter(s -> s.getMovie().getGenre().contains(genre)).collect(Collectors.toList());
