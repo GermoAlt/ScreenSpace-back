@@ -40,8 +40,7 @@ public class CinemaMapperImpl implements CinemaMapper{
     }
 
     @Override
-    public Cinema mapCreateCinemaToUpdateCinema(UpdateCinemaRequest updateCinemaRequest) {
-        Cinema cinema = new Cinema();
+    public Cinema mapCreateCinemaToUpdateCinema(UpdateCinemaRequest updateCinemaRequest, Cinema cinema) {
         cinema.setAddress(mapToAddress(updateCinemaRequest.getAddress()));
         cinema.setName(updateCinemaRequest.getName());
         cinema.setGeolocation(mapToGeolocation(updateCinemaRequest.getGeoLocation()));

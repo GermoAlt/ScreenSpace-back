@@ -55,9 +55,9 @@ public class CinemaService implements ICinemaService{
 
     @Override
     public Cinema updateCinemaById(String cinemaId, UpdateCinemaRequest cinemaRequest) {
-        cinemaRepository.findById(cinemaId)
+        Cinema cinema = cinemaRepository.findById(cinemaId)
                 .orElseThrow(() -> new EntityNotFound(String.format("Cinema %s not found", cinemaId)));
-        Cinema cinemaUpdated = CinemaMapper.INSTANCE.mapCreateCinemaToUpdateCinema(cinemaRequest);
+        Cinema cinemaUpdated = CinemaMapper.INSTANCE.mapCreateCinemaToUpdateCinema(cinemaRequest, cinema);
         return cinemaRepository.save(cinemaUpdated);
     }
 
