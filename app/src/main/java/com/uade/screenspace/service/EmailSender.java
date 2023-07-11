@@ -13,11 +13,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class EmailSender implements IEmailSender {
 
-    private String API_KEY = System.getenv("app.sendgrid.key");//;
+    private String API_KEY = System.getenv("app.sendgrid.key");
+    private List<ScheduledEmail> emailList = new ArrayList<>();
+    ScheduledExecutorService  service = Executors.newSingleThreadScheduledExecutor();
+
+    public EmailSender() {
+        service.schedule(() -> emailList.forEach(this::sendEmail), 15, TimeUnit.SECONDS);
+    }
 
     @Value("${app.sendgrid.from}")
     private String FROM_EMAIL;
@@ -26,14 +37,16 @@ public class EmailSender implements IEmailSender {
     public boolean sendPasswordResetCode(String email, String code) throws IOException {
         String subject = "Reinicio de contraseña Screenspace";
         Content content = new Content("text/plain", String.format("Su codigo de reinicio de contraseña es : %s", code));
-        return sendEmail(subject, content, email);
+        ScheduledEmail scheduledEmail = new ScheduledEmail(subject, email, content);
+        return sendEmail(scheduledEmail);
     }
 
     @Override
     public boolean sendRegistrationCode(String email, String code) throws IOException {
         String subject = "Confirmacion de registro de usuario";
         Content content = new Content("text/plain", String.format("Su codigo de confirmacion de registro es : %s", code));
-        return sendEmail(subject, content, email);
+        ScheduledEmail scheduledEmail = new ScheduledEmail(subject, email, content);
+        return sendEmail(scheduledEmail);
     }
 
     @Override
@@ -53,13 +66,14 @@ public class EmailSender implements IEmailSender {
         String importe = String.format("%.2f", reservation.getScreening().getTheater().getPricePerFunction() * reservation.getSeatsReserved().size());
         builder.append(String.format("Importe entradas : %s", importe));
         Content content = new Content("text/html", builder.toString());
-        return sendEmail(subject, content, reservation.getUser().getEmail());
+        ScheduledEmail scheduledEmail = new ScheduledEmail(subject, email, content);
+        return sendEmail(scheduledEmail);
     }
 
-    public boolean sendEmail(String subject, Content content, String email) throws IOException {
+    public boolean sendEmail(ScheduledEmail scheduledEmail) {
         Email from = new Email(FROM_EMAIL);
-        Email to = new Email(email);
-        Mail mail = new Mail(from, subject, to, content);
+        Email to = new Email(scheduledEmail.email);
+        Mail mail = new Mail(from, scheduledEmail.subject, to, scheduledEmail.content);
         SendGrid sg = new SendGrid(API_KEY);
         Request request = new Request();
         try {
@@ -71,8 +85,20 @@ public class EmailSender implements IEmailSender {
             System.out.println(response.getBody());
             System.out.println(response.getHeaders());
         } catch (IOException ex) {
-            throw ex;
+            emailList.add(scheduledEmail);
         }
         return true;
+    }
+
+    private class ScheduledEmail{
+        private String subject;
+        private String email;
+        private Content content;
+
+        public ScheduledEmail(String subject, String email, Content content) {
+            this.subject = subject;
+            this.email = email;
+            this.content = content;
+        }
     }
 }
